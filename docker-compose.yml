@@ -1,0 +1,359 @@
+version: '3.8'
+
+services:
+  # ========================================================
+  # Infrastructure Services
+  # ========================================================
+  mysql:
+    image: mysql:8.0
+    container_name: travelwithus-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - travelwithus-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: travelwithus-redis
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - travelwithus-network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: travelwithus-zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - travelwithus-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: travelwithus-kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server kafka:9092 --list"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Spring Cloud Infrastructure
+  # ========================================================
+  service-registry:
+    build:
+      context: ./service-registry
+      dockerfile: Dockerfile
+    container_name: travelwithus-service-registry
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - travelwithus-network
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    container_name: travelwithus-config-server
+    restart: always
+    depends_on:
+      - service-registry
+    ports:
+      - "8888:8888"
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+    networks:
+      - travelwithus-network
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: travelwithus-api-gateway
+    restart: always
+    depends_on:
+      - service-registry
+      - config-server
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Business Microservices (Phase 2)
+  # ========================================================
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-auth-service
+    restart: always
+    depends_on:
+      - mysql
+      - service-registry
+      - config-server
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    networks:
+      - travelwithus-network
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-user-service
+    restart: always
+    depends_on:
+      - mysql
+      - service-registry
+      - config-server
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Catalog & Inventory Microservices (Phase 3)
+  # ========================================================
+  destination-service:
+    build:
+      context: ./destination-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-destination-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - service-registry
+      - config-server
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+    networks:
+      - travelwithus-network
+
+  package-service:
+    build:
+      context: ./package-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-package-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - service-registry
+      - config-server
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+    networks:
+      - travelwithus-network
+
+  hotel-service:
+    build:
+      context: ./hotel-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-hotel-service
+    restart: always
+    depends_on:
+      - mysql
+      - redis
+      - service-registry
+      - config-server
+    ports:
+      - "8085:8085"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      REDIS_HOST: redis
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Booking & Payment Microservices (Phase 4)
+  # ========================================================
+  booking-service:
+    build:
+      context: ./booking-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-booking-service
+    restart: always
+    depends_on:
+      - mysql
+      - service-registry
+      - config-server
+    ports:
+      - "8086:8086"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    networks:
+      - travelwithus-network
+
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-payment-service
+    restart: always
+    depends_on:
+      - mysql
+      - service-registry
+      - config-server
+    ports:
+      - "8087:8087"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Real-Time & Event Notifications (Phase 5)
+  # ========================================================
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-notification-service
+    restart: always
+    depends_on:
+      - mysql
+      - kafka
+      - service-registry
+      - config-server
+    ports:
+      - "8088:8088"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Reviews, Ratings & Moderation (Phase 6)
+  # ========================================================
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: travelwithus-review-service
+    restart: always
+    depends_on:
+      - mysql
+      - service-registry
+      - config-server
+    ports:
+      - "8089:8089"
+    environment:
+      EUREKA_SERVER_URL: http://service-registry:8761/eureka/
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Frontend Web Application (Phase 7)
+  # ========================================================
+  travelwithus-web:
+    build:
+      context: ./travelwithus-web
+      dockerfile: Dockerfile
+    container_name: travelwithus-web
+    restart: always
+    depends_on:
+      - api-gateway
+    ports:
+      - "3000:80"
+    networks:
+      - travelwithus-network
+
+  # ========================================================
+  # Admin Portal Application (Phase 8)
+  # ========================================================
+  travelwithus-admin:
+    build:
+      context: ./travelwithus-admin
+      dockerfile: Dockerfile
+    container_name: travelwithus-admin
+    restart: always
+    depends_on:
+      - api-gateway
+    ports:
+      - "3001:80"
+    networks:
+      - travelwithus-network
+
+networks:
+  travelwithus-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+  redis-data:

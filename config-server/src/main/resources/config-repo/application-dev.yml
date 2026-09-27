@@ -1,0 +1,13 @@
+# Development Profile Defaults
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+logging:
+  level:
+    com.travelwithus: DEBUG
+    org.springframework.security: DEBUG
