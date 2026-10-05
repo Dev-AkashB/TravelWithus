@@ -10,7 +10,7 @@ export const PackagesPage = () => {
 
   const [packages, setPackages] = useState(FALLBACK_PACKAGES);
   const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [maxPrice, setMaxPrice] = useState(3000);
+  const [maxPrice, setMaxPrice] = useState(100000);
 
   useEffect(() => {
     api.getPackages().then(data => data && setPackages(data));
@@ -25,19 +25,18 @@ export const PackagesPage = () => {
   });
 
   return (
-    <div className="container" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
+    <div className="container" style={{ paddingTop: '48px', paddingBottom: '80px' }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', maxWidth: '700px', margin: '0 auto 40px' }}>
+      <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 40px' }}>
         <div className="badge badge-gold" style={{ marginBottom: '12px' }}>Curated Itineraries</div>
-        <h1 style={{ fontSize: '2.8rem', marginBottom: '14px' }}>Tour & Vacation Packages</h1>
-        <p style={{ color: '#94a3b8', fontSize: '1.05rem' }}>
-          Fully coordinated private journeys featuring luxury stays, guided cultural access, and round-trip transfers.
+        <h1 style={{ fontSize: '2.8rem', marginBottom: '14px', color: '#0f172a' }}>Tour & Vacation Packages</h1>
+        <p style={{ color: '#475569', fontSize: '1.05rem', lineHeight: '1.6' }}>
+          Fully coordinated private journeys featuring luxury stays, guided cultural access, and round-trip transfers across India and beyond.
         </p>
       </div>
 
       {/* Filter Bar */}
       <div
-        className="glass-panel"
         style={{
           padding: '20px 24px',
           borderRadius: '20px',
@@ -46,14 +45,17 @@ export const PackagesPage = () => {
           flexWrap: 'wrap',
           gap: '24px',
           alignItems: 'center',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          background: '#ffffff',
+          border: '1px solid #e2e8f0',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)'
         }}
       >
         <div style={{ position: 'relative', width: '320px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '14px', top: '14px', color: '#64748b' }} />
+          <Search size={18} style={{ position: 'absolute', left: '14px', top: '13px', color: '#64748b' }} />
           <input
             type="text"
-            placeholder="Search Bali, Paris, Swiss Alps..."
+            placeholder="Search Goa, Kashmir, Kerala, Rajasthan..."
             className="input-field"
             style={{ paddingLeft: '44px' }}
             value={searchQuery}
@@ -62,15 +64,17 @@ export const PackagesPage = () => {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Max Budget: <strong>${maxPrice}</strong></span>
+          <span style={{ fontSize: '0.9rem', color: '#475569' }}>
+            Max Budget: <strong style={{ color: '#0f172a' }}>₹{maxPrice.toLocaleString('en-IN')}</strong>
+          </span>
           <input
             type="range"
-            min="500"
-            max="4000"
-            step="100"
+            min="15000"
+            max="150000"
+            step="5000"
             value={maxPrice}
             onChange={(e) => setMaxPrice(Number(e.target.value))}
-            style={{ accentColor: '#14b8a6', cursor: 'pointer' }}
+            style={{ accentColor: '#0d9488', cursor: 'pointer' }}
           />
         </div>
       </div>
@@ -83,7 +87,7 @@ export const PackagesPage = () => {
             className="glass-card"
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
               borderRadius: '24px',
               overflow: 'hidden'
             }}
@@ -98,7 +102,7 @@ export const PackagesPage = () => {
               {pkg.discountPercentage > 0 && (
                 <div style={{ position: 'absolute', top: '16px', left: '16px' }}>
                   <span className="badge badge-rose" style={{ padding: '6px 14px', fontSize: '0.85rem' }}>
-                    {pkg.discountPercentage}%% Off Early Bird
+                    {pkg.discountPercentage}% Off Festive Special
                   </span>
                 </div>
               )}
@@ -107,17 +111,17 @@ export const PackagesPage = () => {
             {/* Info Column */}
             <div style={{ padding: '32px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', flexWrap: 'wrap' }}>
                   <span className="badge badge-teal">{pkg.destinationName}</span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: '#94a3b8' }}>
-                    <Clock size={14} /> {pkg.durationDays} Days / {pkg.durationNights} Nights
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.82rem', color: '#64748b' }}>
+                    <Clock size={14} color="#0d9488" /> {pkg.durationDays} Days / {pkg.durationNights} Nights
                   </span>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: '#fbbf24' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.82rem', color: '#b45309', fontWeight: 600 }}>
                     <Users size={14} /> {pkg.availableSlots} Slots Left
                   </span>
                 </div>
 
-                <h2 style={{ fontSize: '1.5rem', marginBottom: '12px' }}>{pkg.title}</h2>
+                <h2 style={{ fontSize: '1.5rem', marginBottom: '12px', color: '#0f172a' }}>{pkg.title}</h2>
 
                 <div style={{ marginBottom: '16px' }}>
                   <RatingStars rating={pkg.rating || 4.9} />
@@ -132,26 +136,27 @@ export const PackagesPage = () => {
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '6px',
-                        fontSize: '0.8rem',
-                        padding: '4px 10px',
+                        fontSize: '0.82rem',
+                        padding: '5px 12px',
                         borderRadius: '6px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        color: '#cbd5e1'
+                        background: '#f1f5f9',
+                        color: '#334155',
+                        fontWeight: 500
                       }}
                     >
-                      <Check size={12} color="#2dd4bf" /> {h}
+                      <Check size={13} color="#0d9488" /> {h}
                     </span>
                   ))}
                 </div>
               </div>
 
               {/* Price & Action */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '20px', flexWrap: 'wrap', gap: '16px' }}>
                 <div>
-                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Total Package Rate</span>
-                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#ffffff' }}>
-                    ${pkg.price}
-                    <span style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 400 }}> / traveler</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b' }}>Total Package Rate</span>
+                  <div style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>
+                    ₹{Number(pkg.price).toLocaleString('en-IN')}
+                    <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 400 }}> / traveler</span>
                   </div>
                 </div>
 

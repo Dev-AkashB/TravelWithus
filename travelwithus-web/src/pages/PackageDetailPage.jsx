@@ -14,7 +14,7 @@ export const PackageDetailPage = () => {
   const [reviews, setReviews] = useState([]);
   const [ratingSummary, setRatingSummary] = useState(null);
   const [activeTab, setActiveTab] = useState('itinerary'); // itinerary, reviews, inclusions
-  const [guests, setGuests] = useState(2);
+  const [guests, setGuests] = useState(1);
 
   // Review submission state
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -37,8 +37,7 @@ export const PackageDetailPage = () => {
   }
 
   const handleVoteHelpful = async (reviewId) => {
-    const res = await api.voteHelpful(reviewId);
-    setReviews(prev => prev.map(r => r.id === reviewId ? { ...r, helpfulVotes: r.helpfulVotes + 1 } : r));
+    setReviews(prev => prev.map(r => r.id === reviewId ? { ...r, helpfulVotes: (r.helpfulVotes || 0) + 1 } : r));
   };
 
   const handleSubmitReview = async (e) => {
@@ -65,39 +64,39 @@ export const PackageDetailPage = () => {
   };
 
   const sampleDays = [
-    { day: 1, title: 'Arrival & VIP Sunset Welcome Cocktail', desc: 'Private luxury transfer from airport to your exclusive resort villa. Evening welcome banquet by the ocean.' },
-    { day: 2, title: 'Sacred Temples & Hidden Forest Waterfalls', desc: 'Guided trek through historic sanctuaries, morning purification ceremony, and private waterfall lunch.' },
-    { day: 3, title: 'Catamaran Sailing & Coral Reef Diving', desc: 'Full-day private yacht cruise exploring secluded bays with snorkeling gear and master diving instructor.' },
-    { day: 4, title: 'Artisan Culinary Masterclass & Spa Ritual', desc: 'Visit local organic farms followed by a five-star private cooking masterclass and 2-hour rejuvenation spa.' },
-    { day: 5, title: 'Farewell Dawn Sunrise Tour & Departure', desc: 'Private sunrise mountaintop breakfast, leisure time at the infinity pool, and airport chauffeur service.' }
+    { day: 1, title: 'Arrival & Welcome Reception', desc: 'Private luxury transfer from airport/station to your premier resort or heritage property. Evening welcome dinner.' },
+    { day: 2, title: 'Heritage Exploration & Cultural Discovery', desc: 'Curated guided tour of iconic landmarks, architectural monuments, and authentic local artisan workshops.' },
+    { day: 3, title: 'Nature, Waterways & Scenic Excursion', desc: 'Full-day experience visiting secluded bays, backwaters or mountain viewpoints with private transport.' },
+    { day: 4, title: 'Culinary Masterclass & Wellness Spa', desc: 'Organic regional dining followed by an authentic rejuvenation massage and sunset leisure.' },
+    { day: 5, title: 'Farewell Dawn Sunrise Tour & Departure', desc: 'Sunrise photography tour, leisurely breakfast, and prompt private transfer to airport or departure terminal.' }
   ];
 
   return (
     <div style={{ paddingBottom: '80px' }}>
       {/* Hero Banner */}
-      <div style={{ position: 'relative', height: '480px', overflow: 'hidden' }}>
+      <div style={{ position: 'relative', height: '440px', overflow: 'hidden' }}>
         <img
           src={pkg.imageUrl}
           alt={pkg.title}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, #090d16 0%, rgba(9, 13, 22, 0.4) 60%, transparent 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(0deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0.3) 60%, transparent 100%)' }} />
 
         <div className="container" style={{ position: 'absolute', bottom: '40px', left: 0, right: 0 }}>
           <div className="badge badge-teal" style={{ marginBottom: '12px' }}>
             <MapPin size={14} /> {pkg.destinationName}
           </div>
-          <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', maxWidth: '900px', lineHeight: 1.2, marginBottom: '16px' }}>
+          <h1 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', color: '#ffffff', maxWidth: '900px', lineHeight: 1.2, marginBottom: '16px' }}>
             {pkg.title}
           </h1>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
             <RatingStars rating={pkg.rating || 4.9} size={18} />
             <span style={{ color: '#94a3b8' }}>•</span>
-            <span style={{ color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#ffffff', display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={16} color="#2dd4bf" /> {pkg.durationDays} Days / {pkg.durationNights} Nights
             </span>
             <span style={{ color: '#94a3b8' }}>•</span>
-            <span style={{ color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <span style={{ color: '#fef08a', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Users size={16} /> {pkg.availableSlots} Slots Open
             </span>
           </div>
@@ -110,7 +109,7 @@ export const PackageDetailPage = () => {
           {/* Left Column: Tabs & Details */}
           <div>
             {/* Tabs */}
-            <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', marginBottom: '32px' }}>
+            <div style={{ display: 'flex', gap: '16px', borderBottom: '2px solid #e2e8f0', marginBottom: '32px' }}>
               {[
                 { id: 'itinerary', label: 'Day-by-Day Itinerary' },
                 { id: 'inclusions', label: 'Inclusions & Services' },
@@ -120,11 +119,12 @@ export const PackageDetailPage = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   style={{
-                    padding: '12px 16px',
+                    padding: '12px 18px',
                     fontSize: '1rem',
-                    fontWeight: 600,
-                    color: activeTab === tab.id ? '#2dd4bf' : '#94a3b8',
-                    borderBottom: activeTab === tab.id ? '2px solid #2dd4bf' : 'none',
+                    fontWeight: activeTab === tab.id ? 700 : 500,
+                    color: activeTab === tab.id ? '#0d9488' : '#64748b',
+                    borderBottom: activeTab === tab.id ? '3px solid #0d9488' : 'none',
+                    marginBottom: '-2px',
                     transition: 'var(--transition)'
                   }}
                 >
@@ -140,9 +140,9 @@ export const PackageDetailPage = () => {
                   <div key={item.day} className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '10px' }}>
                       <span className="badge badge-teal" style={{ padding: '6px 12px' }}>Day {item.day}</span>
-                      <h3 style={{ fontSize: '1.2rem' }}>{item.title}</h3>
+                      <h3 style={{ fontSize: '1.2rem', color: '#0f172a' }}>{item.title}</h3>
                     </div>
-                    <p style={{ color: '#94a3b8', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                    <p style={{ color: '#475569', lineHeight: '1.6', fontSize: '0.95rem' }}>
                       {item.desc}
                     </p>
                   </div>
@@ -154,26 +154,29 @@ export const PackageDetailPage = () => {
             {activeTab === 'inclusions' && (
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                 <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
-                  <h3 style={{ fontSize: '1.15rem', color: '#34d399', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: '1.15rem', color: '#047857', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <Check size={20} /> What's Included
                   </h3>
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem', color: '#cbd5e1' }}>
-                    <li>• 5-Star Luxury Villa / Resort accommodations</li>
-                    <li>• Daily gourmet breakfasts & chef banquets</li>
-                    <li>• Private chauffeured vehicle with personal guide</li>
-                    <li>• VIP priority entrance to all national monuments</li>
-                    <li>• Comprehensive international travel health coverage</li>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem', color: '#334155' }}>
+                    {pkg.inclusions?.map((inc, i) => (
+                      <li key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Check size={16} color="#0d9488" /> {inc}
+                      </li>
+                    ))}
+                    <li style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Check size={16} color="#0d9488" /> 24/7 Dedicated Concierge Support
+                    </li>
                   </ul>
                 </div>
 
                 <div className="glass-card" style={{ padding: '24px', borderRadius: '16px' }}>
-                  <h3 style={{ fontSize: '1.15rem', color: '#f87171', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <h3 style={{ fontSize: '1.15rem', color: '#be123c', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <X size={20} /> Not Included
                   </h3>
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem', color: '#94a3b8' }}>
-                    <li>• International flights (available on request)</li>
-                    <li>• Personal shopping & alcoholic beverages</li>
-                    <li>• Optional helicopter excursions</li>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem', color: '#64748b' }}>
+                    <li>• Personal laundry, phone charges & mini-bar</li>
+                    <li>• Optional adventure sports insurance</li>
+                    <li>• Gratuities & personal souvenirs</li>
                   </ul>
                 </div>
               </div>
@@ -182,54 +185,36 @@ export const PackageDetailPage = () => {
             {/* Tab: Reviews */}
             {activeTab === 'reviews' && (
               <div>
-                {/* Rating Summary Header */}
-                <div className="glass-panel" style={{ padding: '24px', borderRadius: '16px', marginBottom: '32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                   <div>
-                    <div style={{ fontSize: '3rem', fontWeight: 800, color: '#ffffff' }}>4.9</div>
-                    <RatingStars rating={4.9} size={20} showScore={false} />
-                    <div style={{ fontSize: '0.85rem', color: '#94a3b8', marginTop: '4px' }}>Based on 24 verified reviews</div>
+                    <h3 style={{ fontSize: '1.3rem', color: '#0f172a' }}>Verified Guest Feedback</h3>
+                    <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Reviewed by authenticated travelers</p>
                   </div>
-
-                  <button
-                    onClick={() => setReviewModalOpen(true)}
-                    className="btn-primary"
-                    style={{ padding: '10px 20px', fontSize: '0.9rem' }}
-                  >
-                    <MessageSquarePlus size={16} /> Write a Review
+                  <button onClick={() => setReviewModalOpen(true)} className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.85rem' }}>
+                    <MessageSquarePlus size={16} /> Write Review
                   </button>
                 </div>
 
-                {/* Review Cards */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {reviews.map(r => (
-                    <div key={r.id} className="glass-card" style={{ padding: '20px', borderRadius: '16px' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span style={{ fontWeight: 600, color: '#ffffff' }}>{r.userFullName}</span>
-                          {r.verifiedBooking && (
-                            <span className="badge badge-teal" style={{ fontSize: '0.7rem' }}>
-                              ✓ Verified Traveler
-                            </span>
-                          )}
+                  {reviews.map((rev) => (
+                    <div key={rev.id} className="glass-card" style={{ padding: '20px', borderRadius: '16px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+                        <div>
+                          <div style={{ fontWeight: 700, color: '#0f172a' }}>{rev.userFullName}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.75rem', color: '#0d9488' }}>
+                            <Shield size={12} /> Verified Traveler
+                          </div>
                         </div>
-                        <RatingStars rating={r.rating} size={14} />
+                        <RatingStars rating={rev.rating} size={14} />
                       </div>
-
-                      <h4 style={{ fontSize: '1rem', marginBottom: '6px', color: '#f8fafc' }}>{r.title}</h4>
-                      <p style={{ fontSize: '0.9rem', color: '#94a3b8', lineHeight: '1.5', marginBottom: '14px' }}>
-                        {r.comment}
-                      </p>
-
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '0.8rem', color: '#64748b' }}>
-                        <button
-                          onClick={() => handleVoteHelpful(r.id)}
-                          style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#cbd5e1', cursor: 'pointer' }}
-                        >
-                          <ThumbsUp size={14} /> Helpful ({r.helpfulVotes})
-                        </button>
-                        <span>•</span>
-                        <span>{new Date(r.createdAt).toLocaleDateString()}</span>
-                      </div>
+                      <h4 style={{ fontSize: '1rem', color: '#0f172a', marginBottom: '6px' }}>{rev.title}</h4>
+                      <p style={{ fontSize: '0.9rem', color: '#475569', lineHeight: '1.5', marginBottom: '12px' }}>{rev.comment}</p>
+                      <button
+                        onClick={() => handleVoteHelpful(rev.id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#64748b' }}
+                      >
+                        <ThumbsUp size={14} /> Helpful ({rev.helpfulVotes || 0})
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -246,25 +231,27 @@ export const PackageDetailPage = () => {
                 top: '100px',
                 padding: '30px',
                 borderRadius: '24px',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.6)'
+                background: '#ffffff',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 10px 30px rgba(15, 23, 42, 0.08)'
               }}
             >
-              <div style={{ marginBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.08)', paddingBottom: '20px' }}>
-                <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Starting from</span>
-                <div style={{ fontSize: '2.4rem', fontWeight: 800, color: '#ffffff' }}>
-                  ${pkg.price}
-                  <span style={{ fontSize: '1rem', color: '#94a3b8', fontWeight: 400 }}> / traveler</span>
+              <div style={{ marginBottom: '20px', borderBottom: '1px solid #e2e8f0', paddingBottom: '20px' }}>
+                <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Starting from</span>
+                <div style={{ fontSize: '2.4rem', fontWeight: 800, color: '#0f172a' }}>
+                  ₹{Number(pkg.price).toLocaleString('en-IN')}
+                  <span style={{ fontSize: '1rem', color: '#64748b', fontWeight: 400 }}> / traveler</span>
                 </div>
                 {pkg.discountPercentage > 0 && (
                   <span className="badge badge-rose" style={{ marginTop: '8px' }}>
-                    Save {pkg.discountPercentage}%% Special Promotion
+                    Save {pkg.discountPercentage}% Special Festive Offer
                   </span>
                 )}
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>Number of Travelers</label>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Number of Travelers</label>
                   <select
                     className="input-field"
                     value={guests}
@@ -277,18 +264,18 @@ export const PackageDetailPage = () => {
                   </select>
                 </div>
 
-                <div style={{ padding: '14px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '12px', fontSize: '0.85rem' }}>
+                <div style={{ padding: '16px', background: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0', fontSize: '0.88rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: '#94a3b8' }}>${pkg.price} × {guests} guests</span>
-                    <span style={{ color: '#ffffff' }}>${(pkg.price * guests).toFixed(2)}</span>
+                    <span style={{ color: '#64748b' }}>₹{Number(pkg.price).toLocaleString('en-IN')} × {guests} guests</span>
+                    <span style={{ color: '#0f172a', fontWeight: 600 }}>₹{(pkg.price * guests).toLocaleString('en-IN')}</span>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                    <span style={{ color: '#94a3b8' }}>Taxes & Port Fees</span>
-                    <span style={{ color: '#34d399' }}>Included</span>
+                    <span style={{ color: '#64748b' }}>GST & Govt. Permits</span>
+                    <span style={{ color: '#047857', fontWeight: 600 }}>Included</span>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '8px', fontWeight: 700 }}>
-                    <span style={{ color: '#ffffff' }}>Estimated Total</span>
-                    <span style={{ color: '#2dd4bf', fontSize: '1.1rem' }}>${(pkg.price * guests).toFixed(2)}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '10px', fontWeight: 700 }}>
+                    <span style={{ color: '#0f172a' }}>Estimated Total</span>
+                    <span style={{ color: '#0d9488', fontSize: '1.2rem' }}>₹{(pkg.price * guests).toLocaleString('en-IN')}</span>
                   </div>
                 </div>
               </div>
@@ -316,7 +303,7 @@ export const PackageDetailPage = () => {
             position: 'fixed',
             inset: 0,
             zIndex: 10000,
-            backgroundColor: 'rgba(0,0,0,0.8)',
+            backgroundColor: 'rgba(15, 23, 42, 0.6)',
             backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
@@ -326,21 +313,20 @@ export const PackageDetailPage = () => {
           onClick={() => setReviewModalOpen(false)}
         >
           <div
-            className="glass-panel"
-            style={{ width: '100%', maxWidth: '500px', padding: '32px', borderRadius: '24px' }}
+            style={{ width: '100%', maxWidth: '500px', padding: '32px', borderRadius: '24px', background: '#ffffff', border: '1px solid #e2e8f0', boxShadow: '0 20px 40px rgba(0,0,0,0.15)' }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ fontSize: '1.4rem', marginBottom: '16px' }}>Share Your Experience</h3>
+            <h3 style={{ fontSize: '1.4rem', color: '#0f172a', marginBottom: '16px' }}>Share Your Experience</h3>
             <form onSubmit={handleSubmitReview} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>Star Rating</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Star Rating</label>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   {[1, 2, 3, 4, 5].map(star => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setNewRating(star)}
-                      style={{ color: star <= newRating ? '#f59e0b' : '#64748b' }}
+                      style={{ color: star <= newRating ? '#f59e0b' : '#cbd5e1' }}
                     >
                       <Star size={24} fill={star <= newRating ? '#f59e0b' : 'none'} />
                     </button>
@@ -349,7 +335,7 @@ export const PackageDetailPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>Headline</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Headline</label>
                 <input
                   type="text"
                   required
@@ -361,7 +347,7 @@ export const PackageDetailPage = () => {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', color: '#cbd5e1', marginBottom: '6px' }}>Your Detailed Review</label>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#334155', marginBottom: '6px' }}>Your Detailed Review</label>
                 <textarea
                   required
                   rows="4"

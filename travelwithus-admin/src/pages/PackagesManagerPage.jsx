@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminApi, MOCK_ADMIN_PACKAGES } from '../api/adminApi';
 import {
   Package, Plus, Search, Trash2, Edit3, CheckCircle2,
-  Calendar, MapPin, DollarSign, Percent, Eye, X
+  Calendar, MapPin, IndianRupee, Percent, Eye, X
 } from 'lucide-react';
 
 export const PackagesManagerPage = () => {
@@ -16,15 +16,15 @@ export const PackagesManagerPage = () => {
   // Form state
   const [formData, setFormData] = useState({
     title: '',
-    destinationName: 'Bali, Indonesia',
+    destinationName: 'Goa, India',
     destinationId: 1,
     durationDays: 5,
     durationNights: 4,
-    price: 999.00,
+    price: 24999.00,
     discountPercentage: 10,
     availableSlots: 15,
-    imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-    highlights: 'Luxury transfers, Guided excursions, Private dinners'
+    imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+    highlights: 'Luxury transfers, Guided excursions, Sunset catamaran sail'
   });
 
   const loadPackages = async () => {
@@ -75,15 +75,15 @@ export const PackagesManagerPage = () => {
       triggerNotification(`Package "${payload.title}" created successfully!`);
       setFormData({
         title: '',
-        destinationName: 'Bali, Indonesia',
+        destinationName: 'Goa, India',
         destinationId: 1,
         durationDays: 5,
         durationNights: 4,
-        price: 999.00,
+        price: 24999.00,
         discountPercentage: 10,
         availableSlots: 15,
-        imageUrl: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80',
-        highlights: 'Luxury transfers, Guided excursions, Private dinners'
+        imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
+        highlights: 'Luxury transfers, Guided excursions, Sunset catamaran sail'
       });
     } catch (err) {
       console.error(err);
@@ -110,14 +110,14 @@ export const PackagesManagerPage = () => {
           position: 'fixed',
           top: '20px',
           right: '20px',
-          background: 'rgba(16, 185, 129, 0.95)',
+          background: '#0d9488',
           color: '#ffffff',
           padding: '12px 20px',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+          boxShadow: '0 10px 25px rgba(13, 148, 136, 0.3)',
           zIndex: 100,
           fontWeight: 600
         }}>
@@ -129,85 +129,61 @@ export const PackagesManagerPage = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
             Tour Packages Inventory
           </h1>
-          <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Manage curated luxury tours, pricing discounts, and real-time traveler slot capacities.
+          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+            Manage curated luxury tours, pricing discounts, and real-time traveler slot capacities across India and the globe.
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          style={{
-            background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '10px 20px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(20, 184, 166, 0.4)'
-          }}
+          className="btn-admin-primary"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
         >
           <Plus size={18} />
           Add Tour Package
         </button>
       </div>
 
-      {/* Controls Bar */}
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: '12px',
+      {/* Search Bar */}
+      <div className="admin-card" style={{
         padding: '14px 18px',
-        marginBottom: '24px',
+        marginBottom: '28px',
         display: 'flex',
         alignItems: 'center',
-        gap: '16px'
+        gap: '12px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, maxWidth: '400px' }}>
-          <Search size={18} color="var(--text-muted)" />
-          <input
-            type="text"
-            placeholder="Search by package title or destination..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: 'var(--text-primary)',
-              width: '100%',
-              fontSize: '0.9rem'
-            }}
-          />
-        </div>
-        <div style={{ marginLeft: 'auto', fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          Showing <strong>{filteredPackages.length}</strong> active packages
-        </div>
+        <Search size={18} color="#94a3b8" />
+        <input
+          type="text"
+          placeholder="Filter packages by title or destination (e.g. Goa, Kashmir, Kerala, Rajasthan)..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="admin-input"
+          style={{ height: '38px', fontSize: '0.88rem' }}
+        />
       </div>
 
-      {/* Packages Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
+      {/* Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+        gap: '24px'
+      }}>
         {filteredPackages.map((pkg) => (
           <div
             key={pkg.id}
+            className="admin-card"
             style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '16px',
+              padding: 0,
               overflow: 'hidden',
               display: 'flex',
-              flexDirection: 'column',
-              transition: 'var(--transition)'
+              flexDirection: 'column'
             }}
           >
             {/* Image Banner */}
-            <div style={{ height: '170px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', height: '170px' }}>
               <img
                 src={pkg.imageUrl}
                 alt={pkg.title}
@@ -216,26 +192,30 @@ export const PackagesManagerPage = () => {
               <div style={{
                 position: 'absolute',
                 top: '12px',
-                right: '12px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                backdropFilter: 'blur(8px)',
+                left: '12px',
+                background: 'rgba(255, 255, 255, 0.92)',
                 padding: '4px 10px',
-                borderRadius: '8px',
+                borderRadius: '6px',
                 fontSize: '0.75rem',
                 fontWeight: 700,
-                color: '#2dd4bf',
-                border: '1px solid rgba(45, 212, 191, 0.3)'
+                color: '#0f172a',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
               }}>
+                <Calendar size={12} color="#0d9488" />
                 {pkg.durationDays}D / {pkg.durationNights}N
               </div>
+
               {pkg.discountPercentage > 0 && (
                 <div style={{
                   position: 'absolute',
                   top: '12px',
-                  left: '12px',
-                  background: 'rgba(239, 68, 68, 0.9)',
-                  padding: '4px 10px',
-                  borderRadius: '8px',
+                  right: '12px',
+                  background: '#be123c',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
                   fontSize: '0.75rem',
                   fontWeight: 800,
                   color: '#ffffff'
@@ -247,28 +227,28 @@ export const PackagesManagerPage = () => {
 
             {/* Body */}
             <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '8px' }}>
-                <MapPin size={14} color="#14b8a6" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#0d9488', fontWeight: 600, fontSize: '0.8rem', marginBottom: '8px' }}>
+                <MapPin size={14} color="#0d9488" />
                 {pkg.destinationName}
               </div>
 
-              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 12px 0', color: 'var(--text-primary)', lineHeight: 1.4 }}>
+              <h3 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 12px 0', color: '#0f172a', lineHeight: 1.4 }}>
                 {pkg.title}
               </h3>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: '1px solid var(--border-subtle)', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', background: '#f8fafc', borderRadius: '10px', border: '1px solid #e2e8f0', marginBottom: '16px' }}>
                 <div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Base Price</span>
-                  <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f1f5f9' }}>
-                    ${pkg.price?.toFixed(2)}
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Base Price (INR)</span>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                    ₹{Number(pkg.price).toLocaleString('en-IN')}
                   </span>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Available Slots</span>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Available Slots</span>
                   <span style={{
                     fontSize: '0.9rem',
                     fontWeight: 700,
-                    color: pkg.availableSlots < 5 ? '#f87171' : '#34d399'
+                    color: pkg.availableSlots < 5 ? '#be123c' : '#047857'
                   }}>
                     {pkg.availableSlots} remaining
                   </span>
@@ -276,28 +256,15 @@ export const PackagesManagerPage = () => {
               </div>
 
               {/* Actions */}
-              <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: '14px' }}>
-                <span style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  color: '#34d399',
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  padding: '3px 8px',
-                  borderRadius: '6px'
-                }}>
+              <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid #e2e8f0', paddingTop: '14px' }}>
+                <span className="status-badge badge-confirmed">
                   ACTIVE
                 </span>
 
                 <button
                   onClick={() => handleDelete(pkg.id, pkg.title)}
+                  className="btn-danger"
                   style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.25)',
-                    color: '#f87171',
-                    borderRadius: '8px',
-                    padding: '6px 12px',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
@@ -318,7 +285,7 @@ export const PackagesManagerPage = () => {
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.75)',
+          background: 'rgba(15, 23, 42, 0.6)',
           backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
@@ -327,15 +294,15 @@ export const PackagesManagerPage = () => {
           padding: '20px'
         }}>
           <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '20px',
             width: '100%',
             maxWidth: '600px',
             maxHeight: '90vh',
             overflowY: 'auto',
             padding: '28px',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)'
+            boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -343,13 +310,13 @@ export const PackagesManagerPage = () => {
                   <Package size={20} />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Create New Tour Package</h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Publish to global traveler catalog</span>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Create New Tour Package</h3>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Publish to live traveler catalog</span>
                 </div>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
               >
                 <X size={20} />
               </button>
@@ -357,57 +324,42 @@ export const PackagesManagerPage = () => {
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                   Package Title
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Kyoto Cherry Blossom & Zen Temples"
+                  placeholder="e.g. Golden Triangle: Delhi, Agra & Jaipur Heritage"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.9rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                     Destination
                   </label>
                   <select
                     value={formData.destinationName}
                     onChange={(e) => setFormData({ ...formData, destinationName: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: '#1e293b',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none',
-                      fontSize: '0.9rem'
-                    }}
+                    className="admin-input"
                   >
+                    <option value="Goa, India">Goa, India</option>
+                    <option value="Kashmir (Srinagar & Gulmarg), India">Kashmir (Srinagar & Gulmarg), India</option>
+                    <option value="Kerala, India">Kerala, India</option>
+                    <option value="Rajasthan, India">Rajasthan, India</option>
+                    <option value="Ladakh, India">Ladakh, India</option>
+                    <option value="Varanasi, India">Varanasi, India</option>
                     <option value="Bali, Indonesia">Bali, Indonesia</option>
-                    <option value="Paris, France">Paris, France</option>
                     <option value="Maldives">Maldives</option>
                     <option value="Swiss Alps, Switzerland">Swiss Alps, Switzerland</option>
-                    <option value="Tokyo, Japan">Tokyo, Japan</option>
-                    <option value="Dubai, UAE">Dubai, UAE</option>
                   </select>
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                     Duration (Days / Nights)
                   </label>
                   <div style={{ display: 'flex', gap: '8px' }}>
@@ -417,15 +369,8 @@ export const PackagesManagerPage = () => {
                       placeholder="Days"
                       value={formData.durationDays}
                       onChange={(e) => setFormData({ ...formData, durationDays: e.target.value })}
-                      style={{
-                        width: '50%',
-                        padding: '10px',
-                        borderRadius: '10px',
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid var(--border-subtle)',
-                        color: '#fff',
-                        outline: 'none'
-                      }}
+                      className="admin-input"
+                      style={{ width: '50%' }}
                     />
                     <input
                       type="number"
@@ -433,15 +378,8 @@ export const PackagesManagerPage = () => {
                       placeholder="Nights"
                       value={formData.durationNights}
                       onChange={(e) => setFormData({ ...formData, durationNights: e.target.value })}
-                      style={{
-                        width: '50%',
-                        padding: '10px',
-                        borderRadius: '10px',
-                        background: 'rgba(255,255,255,0.03)',
-                        border: '1px solid var(--border-subtle)',
-                        color: '#fff',
-                        outline: 'none'
-                      }}
+                      className="admin-input"
+                      style={{ width: '50%' }}
                     />
                   </div>
                 </div>
@@ -449,28 +387,20 @@ export const PackagesManagerPage = () => {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                    Base Price ($)
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                    Base Price (INR ₹)
                   </label>
                   <input
                     type="number"
-                    step="0.01"
+                    step="1"
                     required
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                     Discount (%)
                   </label>
                   <input
@@ -479,111 +409,65 @@ export const PackagesManagerPage = () => {
                     max="90"
                     value={formData.discountPercentage}
                     onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                    Initial Slots
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                    Available Slots
                   </label>
                   <input
                     type="number"
                     min="1"
+                    required
                     value={formData.availableSlots}
                     onChange={(e) => setFormData({ ...formData, availableSlots: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                  Cover Image URL
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                  Image URL
                 </label>
                 <input
                   type="url"
                   required
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.85rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                   Highlights (comma-separated)
                 </label>
-                <textarea
-                  rows="2"
+                <input
+                  type="text"
                   value={formData.highlights}
                   onChange={(e) => setFormData({ ...formData, highlights: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.85rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  style={{
-                    padding: '10px 18px',
-                    background: 'transparent',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-secondary)',
-                    borderRadius: '10px',
-                    cursor: 'pointer'
-                  }}
+                  className="btn-admin-secondary"
+                  style={{ flex: 1 }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  style={{
-                    padding: '10px 22px',
-                    background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-                    border: 'none',
-                    color: '#fff',
-                    borderRadius: '10px',
-                    fontWeight: 700,
-                    cursor: submitting ? 'not-allowed' : 'pointer'
-                  }}
+                  className="btn-admin-primary"
+                  style={{ flex: 1 }}
                 >
-                  {submitting ? 'Publishing...' : 'Save & Publish'}
+                  {submitting ? 'Creating...' : 'Publish Tour Package'}
                 </button>
               </div>
             </form>

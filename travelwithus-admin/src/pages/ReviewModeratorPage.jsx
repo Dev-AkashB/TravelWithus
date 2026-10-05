@@ -55,14 +55,14 @@ export const ReviewModeratorPage = () => {
           position: 'fixed',
           top: '20px',
           right: '20px',
-          background: 'rgba(16, 185, 129, 0.95)',
+          background: '#0d9488',
           color: '#ffffff',
           padding: '12px 20px',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+          boxShadow: '0 10px 25px rgba(13, 148, 136, 0.3)',
           zIndex: 100,
           fontWeight: 600
         }}>
@@ -74,10 +74,10 @@ export const ReviewModeratorPage = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
             Review Moderation Queue
           </h1>
-          <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
             Review submitted traveler feedback, verify booking credentials, and approve public display.
           </p>
         </div>
@@ -91,12 +91,11 @@ export const ReviewModeratorPage = () => {
               style={{
                 padding: '8px 16px',
                 borderRadius: '8px',
-                fontSize: '0.8rem',
+                fontSize: '0.82rem',
                 fontWeight: 600,
-                border: '1px solid',
-                borderColor: filterStatus === st ? '#14b8a6' : 'var(--border-subtle)',
-                background: filterStatus === st ? 'rgba(20, 184, 166, 0.15)' : 'transparent',
-                color: filterStatus === st ? '#2dd4bf' : 'var(--text-secondary)',
+                border: `1px solid ${filterStatus === st ? '#99f6e4' : '#cbd5e1'}`,
+                background: filterStatus === st ? '#f0fdfa' : '#f1f5f9',
+                color: filterStatus === st ? '#0d9488' : '#475569',
                 cursor: 'pointer'
               }}
             >
@@ -110,12 +109,12 @@ export const ReviewModeratorPage = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {filteredReviews.length === 0 ? (
           <div style={{
-            background: 'var(--bg-surface)',
-            border: '1px solid var(--border-subtle)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '16px',
             padding: '40px',
             textAlign: 'center',
-            color: 'var(--text-muted)'
+            color: '#64748b'
           }}>
             No reviews matching selected status filter.
           </div>
@@ -123,15 +122,12 @@ export const ReviewModeratorPage = () => {
           filteredReviews.map((rev) => (
             <div
               key={rev.id}
+              className="admin-card"
               style={{
-                background: 'var(--bg-surface)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '16px',
                 padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
-                transition: 'var(--transition)'
+                gap: '16px'
               }}
             >
               {/* Header row */}
@@ -141,19 +137,20 @@ export const ReviewModeratorPage = () => {
                     width: '42px',
                     height: '42px',
                     borderRadius: '50%',
-                    background: 'linear-gradient(135deg, #0d9488, #0284c7)',
+                    background: '#ccfbf1',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontWeight: 700,
-                    color: '#fff',
-                    fontSize: '1rem'
+                    color: '#0d9488',
+                    fontSize: '1rem',
+                    border: '2px solid #99f6e4'
                   }}>
                     {rev.userFullName ? rev.userFullName.charAt(0) : 'U'}
                   </div>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>
+                      <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem' }}>
                         {rev.userFullName || 'Anonymous Traveler'}
                       </span>
                       {rev.verifiedBooking && (
@@ -161,20 +158,20 @@ export const ReviewModeratorPage = () => {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '4px',
-                          background: 'rgba(20, 184, 166, 0.15)',
-                          color: '#2dd4bf',
+                          background: '#ecfdf5',
+                          color: '#047857',
                           fontSize: '0.72rem',
                           fontWeight: 700,
                           padding: '2px 8px',
                           borderRadius: '9999px',
-                          border: '1px solid rgba(20, 184, 166, 0.3)'
+                          border: '1px solid #a7f3d0'
                         }}>
                           <ShieldCheck size={12} />
                           Verified Booking
                         </span>
                       )}
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                    <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
                       {rev.targetType} #{rev.targetId} • {new Date(rev.createdAt || Date.now()).toLocaleDateString()}
                     </span>
                   </div>
@@ -187,26 +184,11 @@ export const ReviewModeratorPage = () => {
                         key={i}
                         size={16}
                         fill={i < rev.rating ? '#f59e0b' : 'none'}
-                        color={i < rev.rating ? '#f59e0b' : '#475569'}
+                        color={i < rev.rating ? '#f59e0b' : '#cbd5e1'}
                       />
                     ))}
                   </div>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    padding: '4px 10px',
-                    borderRadius: '6px',
-                    background: rev.status === 'APPROVED'
-                      ? 'rgba(16, 185, 129, 0.15)'
-                      : rev.status === 'REJECTED'
-                      ? 'rgba(239, 68, 68, 0.15)'
-                      : 'rgba(245, 158, 11, 0.15)',
-                    color: rev.status === 'APPROVED'
-                      ? '#34d399'
-                      : rev.status === 'REJECTED'
-                      ? '#f87171'
-                      : '#fbbf24'
-                  }}>
+                  <span className={`status-badge ${rev.status === 'APPROVED' ? 'badge-confirmed' : rev.status === 'REJECTED' ? 'badge-cancelled' : 'badge-pending'}`}>
                     {rev.status}
                   </span>
                 </div>
@@ -214,10 +196,10 @@ export const ReviewModeratorPage = () => {
 
               {/* Review Content */}
               <div>
-                <h4 style={{ fontSize: '1rem', fontWeight: 700, margin: '0 0 6px 0', color: 'var(--text-primary)' }}>
+                <h4 style={{ fontSize: '1.05rem', fontWeight: 700, margin: '0 0 6px 0', color: '#0f172a' }}>
                   {rev.title}
                 </h4>
-                <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                <p style={{ margin: 0, fontSize: '0.9rem', color: '#475569', lineHeight: 1.6 }}>
                   "{rev.comment}"
                 </p>
               </div>
@@ -228,19 +210,13 @@ export const ReviewModeratorPage = () => {
                 justifyContent: 'flex-end',
                 gap: '10px',
                 paddingTop: '12px',
-                borderTop: '1px solid var(--border-subtle)'
+                borderTop: '1px solid #e2e8f0'
               }}>
                 {rev.status !== 'APPROVED' && (
                   <button
                     onClick={() => handleModerate(rev.id, 'APPROVED')}
+                    className="btn-success"
                     style={{
-                      background: 'rgba(16, 185, 129, 0.1)',
-                      border: '1px solid rgba(16, 185, 129, 0.3)',
-                      color: '#34d399',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontWeight: 600,
-                      fontSize: '0.8rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',
@@ -251,17 +227,12 @@ export const ReviewModeratorPage = () => {
                     Approve & Publish
                   </button>
                 )}
+
                 {rev.status !== 'REJECTED' && (
                   <button
                     onClick={() => handleModerate(rev.id, 'REJECTED')}
+                    className="btn-danger"
                     style={{
-                      background: 'rgba(239, 68, 68, 0.1)',
-                      border: '1px solid rgba(239, 68, 68, 0.3)',
-                      color: '#f87171',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontWeight: 600,
-                      fontSize: '0.8rem',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '6px',

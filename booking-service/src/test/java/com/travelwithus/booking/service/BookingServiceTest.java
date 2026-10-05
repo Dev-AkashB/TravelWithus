@@ -49,7 +49,7 @@ class BookingServiceTest {
         createRequest = new CreateBookingRequest();
         createRequest.setUserId(1L);
         createRequest.setCustomerEmail("traveler@travelwithus.com");
-        createRequest.setCustomerName("Alex Mercer");
+        createRequest.setCustomerName("Yash");
         createRequest.setBookingType(BookingType.PACKAGE);
         createRequest.setItemReferenceId(10L);
         createRequest.setItemTitle("Bali Tropical Paradise & Cultural Discovery");
@@ -59,8 +59,7 @@ class BookingServiceTest {
         createRequest.setTotalAmount(new BigDecimal("2598.00"));
         createRequest.setTravelers(List.of(
                 new TravelerDto("Alex Mercer", 32, "Male", "P12345678", true),
-                new TravelerDto("Elena Mercer", 30, "Female", "P87654321", false)
-        ));
+                new TravelerDto("Elena Mercer", 30, "Female", "P87654321", false)));
     }
 
     @Test

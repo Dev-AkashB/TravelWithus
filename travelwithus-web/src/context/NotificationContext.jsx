@@ -85,6 +85,9 @@ export const NotificationProvider = ({ children }) => {
         },
         onStompError: (frame) => {
           console.debug('STOMP error, falling back to local simulator', frame);
+        },
+        onWebSocketError: () => {
+          console.debug('STOMP WebSocket unavailable, running in local mode');
         }
       });
 

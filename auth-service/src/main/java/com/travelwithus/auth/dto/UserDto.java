@@ -14,7 +14,8 @@ public class UserDto {
     public UserDto() {
     }
 
-    public UserDto(Long id, String email, String firstName, String lastName, String phone, boolean enabled, Set<String> roles) {
+    public UserDto(Long id, String email, String firstName, String lastName, String phone, boolean enabled,
+            Set<String> roles) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;

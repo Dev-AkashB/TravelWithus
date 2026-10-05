@@ -14,6 +14,8 @@ import { PackageDetailPage } from './pages/PackageDetailPage';
 import { HotelsPage } from './pages/HotelsPage';
 import { BookingPage } from './pages/BookingPage';
 import { MyBookingsPage } from './pages/MyBookingsPage';
+import { ProfilePage } from './pages/ProfilePage';
+import { OAuth2RedirectHandler } from './pages/OAuth2RedirectHandler';
 
 export function App() {
   return (
@@ -31,6 +33,8 @@ export function App() {
                 <Route path="/hotels" element={<HotelsPage />} />
                 <Route path="/booking" element={<BookingPage />} />
                 <Route path="/my-bookings" element={<MyBookingsPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
               </Routes>
             </main>
             <Footer />

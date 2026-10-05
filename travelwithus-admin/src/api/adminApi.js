@@ -18,42 +18,135 @@ adminClient.interceptors.request.use((config) => {
   return config;
 });
 
-// Mock Seed Data for instantaneous admin dashboard visualization
+// Mock Seed Data for instantaneous admin dashboard visualization in INR (₹)
 export const MOCK_ADMIN_STATS = {
-  totalRevenue: 284500.00,
-  confirmedBookings: 184,
-  pendingBookings: 12,
-  cancelledBookings: 6,
-  activePackages: 10,
-  pendingReviews: 3,
-  registeredUsers: 1420
+  totalRevenue: 28450000.00,
+  confirmedBookings: 324,
+  pendingBookings: 18,
+  cancelledBookings: 8,
+  activePackages: 14,
+  pendingReviews: 4,
+  registeredUsers: 1850
 };
+
+export const MOCK_CUSTOMERS = [
+  {
+    id: 1,
+    fullName: 'Aarav Sharma',
+    email: 'aarav.sharma@travelwithus.com',
+    phoneNumber: '+91 98765 43210',
+    city: 'Mumbai',
+    state: 'Maharashtra',
+    country: 'India',
+    loyaltyTier: 'PLATINUM',
+    totalBookings: 8,
+    totalSpent: 425000.00,
+    status: 'ACTIVE',
+    registeredAt: '2025-11-12T10:30:00',
+    notes: 'Prefers high-floor lake-facing suites in Rajasthan & private Shikaras in Kashmir.'
+  },
+  {
+    id: 2,
+    fullName: 'Priya Iyer',
+    email: 'priya.iyer@gmail.com',
+    phoneNumber: '+91 98112 34567',
+    city: 'Bengaluru',
+    state: 'Karnataka',
+    country: 'India',
+    loyaltyTier: 'GOLD',
+    totalBookings: 5,
+    totalSpent: 215000.00,
+    status: 'ACTIVE',
+    registeredAt: '2026-01-20T14:15:00',
+    notes: 'Ayurvedic retreat & tea plantation enthusiast. Always requests organic meals.'
+  },
+  {
+    id: 3,
+    fullName: 'Vikramaditya Rathore',
+    email: 'vikram.rathore@outlook.com',
+    phoneNumber: '+91 99280 12345',
+    city: 'Jaipur',
+    state: 'Rajasthan',
+    country: 'India',
+    loyaltyTier: 'PLATINUM',
+    totalBookings: 12,
+    totalSpent: 780000.00,
+    status: 'ACTIVE',
+    registeredAt: '2025-08-04T09:00:00',
+    notes: 'Corporate leader. Books VIP heritage expeditions and luxury fleet transfers.'
+  },
+  {
+    id: 4,
+    fullName: 'Ananya Deshmukh',
+    email: 'ananya.deshmukh@yahoo.com',
+    phoneNumber: '+91 97654 89012',
+    city: 'Pune',
+    state: 'Maharashtra',
+    country: 'India',
+    loyaltyTier: 'SILVER',
+    totalBookings: 3,
+    totalSpent: 89000.00,
+    status: 'ACTIVE',
+    registeredAt: '2026-03-10T11:45:00',
+    notes: 'Avid traveler for weekend Goa catamaran tours and scuba retreats.'
+  },
+  {
+    id: 5,
+    fullName: 'Rohan Mehra',
+    email: 'rohan.mehra@travelwithus.com',
+    phoneNumber: '+91 98450 77889',
+    city: 'Delhi NCR',
+    state: 'Delhi',
+    country: 'India',
+    loyaltyTier: 'GOLD',
+    totalBookings: 4,
+    totalSpent: 168000.00,
+    status: 'ACTIVE',
+    registeredAt: '2026-02-18T16:20:00',
+    notes: 'Family vacation planner. Requires child-friendly snow activities in Gulmarg.'
+  },
+  {
+    id: 6,
+    fullName: 'Siddharth Menon',
+    email: 'siddharth.menon@hotmail.com',
+    phoneNumber: '+91 94471 23890',
+    city: 'Kochi',
+    state: 'Kerala',
+    country: 'India',
+    loyaltyTier: 'SILVER',
+    totalBookings: 1,
+    totalSpent: 38499.00,
+    status: 'INACTIVE',
+    registeredAt: '2026-05-02T13:10:00',
+    notes: 'Inquired about Ladakh motorcycle expedition.'
+  }
+];
 
 export const MOCK_BOOKINGS = [
   {
     id: 101,
     bookingNumber: 'TWU-BKG-883A9F12',
-    customerName: 'Alex Mercer',
-    customerEmail: 'alex.mercer@travelwithus.com',
-    itemTitle: 'Bali Tropical Paradise & Cultural Discovery',
+    customerName: 'Aarav Sharma',
+    customerEmail: 'aarav.sharma@travelwithus.com',
+    itemTitle: 'Goa Coastal Grandeur & Private Catamaran Escape',
     bookingType: 'PACKAGE',
     numberOfGuests: 2,
-    totalAmount: 2598.00,
+    totalAmount: 49998.00,
     status: 'CONFIRMED',
     paymentStatus: 'PAID',
     startDate: '2026-10-12',
-    endDate: '2026-10-19',
+    endDate: '2026-10-17',
     createdAt: '2026-09-27T14:30:00'
   },
   {
     id: 102,
     bookingNumber: 'TWU-BKG-994BC342',
-    customerName: 'Elena Rostova',
-    customerEmail: 'elena.rostova@travelwithus.com',
-    itemTitle: 'Maldives Overwater Sanctuary Escape',
+    customerName: 'Priya Iyer',
+    customerEmail: 'priya.iyer@gmail.com',
+    itemTitle: 'Magical Kashmir: Dal Lake Houseboat & Gulmarg Snow Safari',
     bookingType: 'PACKAGE',
     numberOfGuests: 2,
-    totalAmount: 4998.00,
+    totalAmount: 73998.00,
     status: 'CONFIRMED',
     paymentStatus: 'PAID',
     startDate: '2026-11-05',
@@ -63,31 +156,31 @@ export const MOCK_BOOKINGS = [
   {
     id: 103,
     bookingNumber: 'TWU-BKG-771DA510',
-    customerName: 'Marcus Vance',
-    customerEmail: 'marcus.vance@travelwithus.com',
-    itemTitle: 'Parisian Romance & Haute Cuisine Tour',
+    customerName: 'Vikramaditya Rathore',
+    customerEmail: 'vikram.rathore@outlook.com',
+    itemTitle: 'Kerala Serenity: Alleppey Houseboat & Munnar Tea Trails',
     bookingType: 'PACKAGE',
-    numberOfGuests: 1,
-    totalAmount: 1599.00,
+    numberOfGuests: 2,
+    totalAmount: 59998.00,
     status: 'PENDING',
     paymentStatus: 'PENDING',
     startDate: '2026-10-20',
-    endDate: '2026-10-25',
+    endDate: '2026-10-26',
     createdAt: '2026-09-27T18:40:00'
   },
   {
     id: 104,
     bookingNumber: 'TWU-BKG-660EB998',
-    customerName: 'Samantha Reed',
-    customerEmail: 'samantha.reed@example.com',
-    itemTitle: 'Ayana Resort & Secluded Cliffside Spa',
+    customerName: 'Ananya Deshmukh',
+    customerEmail: 'ananya.deshmukh@yahoo.com',
+    itemTitle: 'The Leela Goa Beachfront Haven',
     bookingType: 'HOTEL',
     numberOfGuests: 2,
-    totalAmount: 1400.00,
+    totalAmount: 37500.00,
     status: 'CANCELLED',
     paymentStatus: 'REFUNDED',
     startDate: '2026-10-01',
-    endDate: '2026-10-06',
+    endDate: '2026-10-04',
     createdAt: '2026-09-26T11:20:00'
   }
 ];
@@ -95,24 +188,24 @@ export const MOCK_BOOKINGS = [
 export const MOCK_REVIEWS_MODERATION = [
   {
     id: 201,
-    userFullName: 'Jessica Chen',
+    userFullName: 'Rohan Mehra',
     targetType: 'PACKAGE',
-    targetId: 1,
+    targetId: 2,
     rating: 5,
-    title: 'The private speedboat tour was out of this world',
-    comment: 'Everything from our arrival cocktail to the sacred temple trek was coordinated to perfection.',
+    title: 'The Kashmir cedarwood houseboat was unforgettable',
+    comment: 'Everything from the hot kahwa welcome to the snowy Gulmarg gondola ride was arranged to perfection.',
     status: 'PENDING',
     verifiedBooking: true,
     createdAt: '2026-09-27T17:10:00'
   },
   {
     id: 202,
-    userFullName: 'David Miller',
+    userFullName: 'Deepika Nair',
     targetType: 'HOTEL',
-    targetId: 2,
+    targetId: 1,
     rating: 2,
-    title: 'Late check-in issue with front desk',
-    comment: 'Room was beautiful but had to wait 20 minutes past check-in time for key cards.',
+    title: 'Late check-in luggage delay',
+    comment: 'Resort is breathtaking but golf buggy transfer took 15 minutes past arrival.',
     status: 'PENDING',
     verifiedBooking: false,
     createdAt: '2026-09-27T18:00:00'
@@ -124,20 +217,20 @@ export const MOCK_TRANSACTIONS = [
     id: 301,
     paymentReference: 'TWU-PAY-883A9F12',
     bookingNumber: 'TWU-BKG-883A9F12',
-    customerEmail: 'alex.mercer@travelwithus.com',
-    amount: 2598.00,
-    paymentMethod: 'CREDIT_CARD',
-    cardLastFour: '4242',
+    customerEmail: 'aarav.sharma@travelwithus.com',
+    amount: 49998.00,
+    paymentMethod: 'UPI',
+    cardLastFour: null,
     status: 'SUCCESS',
-    transactionId: 'ch_stripe_883a9f1234',
+    transactionId: 'upi_ref_883a9f1234',
     createdAt: '2026-09-27T14:31:00'
   },
   {
     id: 302,
     paymentReference: 'TWU-PAY-994BC342',
     bookingNumber: 'TWU-BKG-994BC342',
-    customerEmail: 'elena.rostova@travelwithus.com',
-    amount: 4998.00,
+    customerEmail: 'priya.iyer@gmail.com',
+    amount: 73998.00,
     paymentMethod: 'CREDIT_CARD',
     cardLastFour: '4242',
     status: 'SUCCESS',
@@ -148,167 +241,166 @@ export const MOCK_TRANSACTIONS = [
     id: 303,
     paymentReference: 'TWU-PAY-660EB998',
     bookingNumber: 'TWU-BKG-660EB998',
-    customerEmail: 'samantha.reed@example.com',
-    amount: 1400.00,
-    paymentMethod: 'CREDIT_CARD',
-    cardLastFour: '1111',
+    customerEmail: 'ananya.deshmukh@yahoo.com',
+    amount: 37500.00,
+    paymentMethod: 'UPI',
+    cardLastFour: null,
     status: 'REFUNDED',
-    transactionId: 'ch_stripe_660eb99899',
+    transactionId: 'upi_ref_660eb99899',
     createdAt: '2026-09-26T11:21:00'
   }
 ];
 
-// Admin API endpoints
 export const MOCK_ADMIN_PACKAGES = [
   {
     id: 1,
-    title: 'Bali Tropical Paradise & Cultural Discovery',
-    destinationName: 'Bali, Indonesia',
+    title: 'Goa Coastal Grandeur & Private Catamaran Escape',
+    destinationName: 'Goa, India',
     destinationId: 1,
-    durationDays: 7,
-    durationNights: 6,
-    price: 1299.00,
+    durationDays: 5,
+    durationNights: 4,
+    price: 24999.00,
     discountPercentage: 15,
-    availableSlots: 14,
+    availableSlots: 16,
     status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
     rating: 4.9,
-    highlights: ['Ubud Sacred Forest', 'Tirta Empul', 'Jimbaran Sunset']
+    highlights: ['Sunset Catamaran', 'Grand Island Scuba', 'Old Goa Heritage']
   },
   {
     id: 2,
-    title: 'Parisian Romance & Haute Cuisine Tour',
-    destinationName: 'Paris, France',
+    title: 'Magical Kashmir: Dal Lake Houseboat & Gulmarg Snow Safari',
+    destinationName: 'Kashmir (Srinagar & Gulmarg), India',
     destinationId: 2,
-    durationDays: 5,
-    durationNights: 4,
-    price: 1599.00,
+    durationDays: 6,
+    durationNights: 5,
+    price: 36999.00,
     discountPercentage: 10,
-    availableSlots: 8,
+    availableSlots: 10,
     status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',
-    rating: 4.8,
-    highlights: ['Eiffel Summit VIP', 'Louvre Curator Tour', 'Seine Dinner Cruise']
+    imageUrl: 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80',
+    rating: 5.0,
+    highlights: ['Luxury Houseboat', 'Gulmarg Gondola', 'Pahalgam Valley']
   },
   {
     id: 3,
-    title: 'Maldives Overwater Sanctuary Escape',
-    destinationName: 'Maldives',
+    title: 'Kerala Serenity: Alleppey Houseboat & Munnar Tea Trails',
+    destinationName: 'Kerala, India',
     destinationId: 3,
     durationDays: 6,
     durationNights: 5,
-    price: 2499.00,
-    discountPercentage: 20,
-    availableSlots: 6,
+    price: 29999.00,
+    discountPercentage: 12,
+    availableSlots: 12,
     status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    highlights: ['Private Seaplane', 'Sunset Coral Reef Snorkel', 'Underwater Dining']
+    imageUrl: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80',
+    rating: 4.9,
+    highlights: ['AC Luxury Houseboat', 'Munnar Tea Plantation', 'Ayurvedic Spa']
   },
   {
     id: 4,
-    title: 'Swiss Alps Skiing & Glacier Express Expedition',
-    destinationName: 'Swiss Alps, Switzerland',
+    title: 'Royal Rajasthan: Jaipur Pink City & Udaipur Lake Palaces',
+    destinationName: 'Rajasthan, India',
     destinationId: 4,
-    durationDays: 8,
-    durationNights: 7,
-    price: 2199.00,
-    discountPercentage: 0,
-    availableSlots: 10,
+    durationDays: 7,
+    durationNights: 6,
+    price: 38499.00,
+    discountPercentage: 15,
+    availableSlots: 14,
     status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    highlights: ['Matterhorn Glacier Ride', 'First Cliff Walk', 'Panoramic Train']
+    imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80',
+    rating: 4.8,
+    highlights: ['Amber Fort Elephant Walk', 'Lake Pichola Cruise', 'City Palace VIP']
   }
 ];
 
 export const MOCK_ADMIN_DESTINATIONS = [
   {
     id: 1,
-    name: 'Bali',
-    country: 'Indonesia',
+    name: 'Goa',
+    country: 'India',
     category: 'BEACH',
-    tagline: 'Island of the Gods & Pristine Beaches',
-    imageUrl: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80',
+    tagline: 'Sun-Kissed Beaches, Heritage Forts & Coastal Nightlife',
+    imageUrl: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80',
     rating: 4.9,
-    startingPrice: 899,
+    startingPrice: 14999,
     popular: true,
-    attractionCount: 14
+    attractionCount: 28
   },
   {
     id: 2,
-    name: 'Paris',
-    country: 'France',
-    category: 'CULTURAL',
-    tagline: 'The City of Light, Art & High Romance',
-    imageUrl: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',
-    rating: 4.8,
-    startingPrice: 1250,
+    name: 'Kashmir',
+    country: 'India',
+    category: 'ADVENTURE',
+    tagline: 'Paradise on Earth, Dal Lake Shikaras & Snowy Peaks',
+    imageUrl: 'https://images.unsplash.com/photo-1595815771614-ade9d652a65d?auto=format&fit=crop&w=800&q=80',
+    rating: 5.0,
+    startingPrice: 28999,
     popular: true,
     attractionCount: 22
   },
   {
     id: 3,
-    name: 'Maldives',
-    country: 'Maldives',
-    category: 'BEACH',
-    tagline: 'Turquoise Lagoons & Private Overwater Villas',
-    imageUrl: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=800&q=80',
-    rating: 5.0,
-    startingPrice: 1899,
+    name: 'Kerala Backwaters',
+    country: 'India',
+    category: 'NATURE',
+    tagline: "God's Own Country, Houseboats & Mist-Clad Tea Hills",
+    imageUrl: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80',
+    rating: 4.9,
+    startingPrice: 22499,
     popular: true,
-    attractionCount: 8
+    attractionCount: 19
   },
   {
     id: 4,
-    name: 'Swiss Alps',
-    country: 'Switzerland',
-    category: 'ADVENTURE',
-    tagline: 'Majestic Glaciers & Alpine Scenic Splendor',
-    imageUrl: 'https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?auto=format&fit=crop&w=800&q=80',
-    rating: 4.9,
-    startingPrice: 1650,
+    name: 'Jaipur & Udaipur',
+    country: 'India',
+    category: 'CULTURAL',
+    tagline: 'The Royal Heart of Rajasthan, Grand Forts & Lake Palaces',
+    imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80',
+    rating: 4.8,
+    startingPrice: 19999,
     popular: true,
-    attractionCount: 18
+    attractionCount: 34
   }
 ];
 
 export const MOCK_ADMIN_HOTELS = [
   {
     id: 1,
-    name: 'Ayana Resort & Secluded Cliffside Spa',
-    destinationName: 'Jimbaran, Bali',
+    name: 'The Leela Goa Beachfront Haven',
+    destinationName: 'Cavelossim, Goa',
     starRating: 5,
-    pricePerNight: 350.00,
+    pricePerNight: 12500.00,
     roomTypesCount: 4,
-    totalRooms: 60,
-    availableRooms: 24,
-    status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'
-  },
-  {
-    id: 2,
-    name: 'Le Grand Palais Heritage Luxury',
-    destinationName: '1st Arrondissement, Paris',
-    starRating: 5,
-    pricePerNight: 520.00,
-    roomTypesCount: 3,
-    totalRooms: 45,
-    availableRooms: 12,
+    totalRooms: 120,
+    availableRooms: 34,
     status: 'ACTIVE',
     imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
   },
   {
-    id: 3,
-    name: 'Soneva Fushi Overwater Eco Haven',
-    destinationName: 'Baa Atoll, Maldives',
+    id: 2,
+    name: 'The Khyber Himalayan Resort & Spa',
+    destinationName: 'Gulmarg, Kashmir',
     starRating: 5,
-    pricePerNight: 890.00,
+    pricePerNight: 19800.00,
     roomTypesCount: 3,
-    totalRooms: 30,
-    availableRooms: 5,
+    totalRooms: 85,
+    availableRooms: 12,
     status: 'ACTIVE',
-    imageUrl: 'https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=800&q=80'
+    imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'
+  },
+  {
+    id: 3,
+    name: 'Taj Lake Palace Heritage Sanctuary',
+    destinationName: 'Udaipur, Rajasthan',
+    starRating: 5,
+    pricePerNight: 32000.00,
+    roomTypesCount: 4,
+    totalRooms: 65,
+    availableRooms: 8,
+    status: 'ACTIVE',
+    imageUrl: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?auto=format&fit=crop&w=800&q=80'
   }
 ];
 
@@ -317,18 +409,102 @@ export const adminApi = {
   getStats: async () => {
     try {
       const res = await adminClient.get('/bookings/admin/stats');
-      return res.data;
+      const baseStats = res.data || MOCK_ADMIN_STATS;
+      const localBookings = JSON.parse(localStorage.getItem('twu_demo_bookings') || '[]');
+      if (localBookings.length > 0) {
+        const localTotal = localBookings.reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+        return {
+          ...baseStats,
+          totalRevenue: (Number(baseStats.totalRevenue) || 0) + localTotal,
+          confirmedBookings: (Number(baseStats.confirmedBookings) || 0) + localBookings.length
+        };
+      }
+      return baseStats;
     } catch {
-      return MOCK_ADMIN_STATS;
+      const localBookings = JSON.parse(localStorage.getItem('twu_demo_bookings') || '[]');
+      const localTotal = localBookings.reduce((sum, b) => sum + (Number(b.totalAmount) || 0), 0);
+      return {
+        ...MOCK_ADMIN_STATS,
+        totalRevenue: MOCK_ADMIN_STATS.totalRevenue + localTotal,
+        confirmedBookings: MOCK_ADMIN_STATS.confirmedBookings + localBookings.length
+      };
     }
   },
+
+  // Customers Management
+  getCustomers: async (search = '') => {
+    try {
+      const res = await adminClient.get(`/users/admin/customers${search ? `?query=${search}` : ''}`);
+      return res.data?.content || MOCK_CUSTOMERS;
+    } catch {
+      const stored = localStorage.getItem('twu_admin_customers');
+      if (stored) return JSON.parse(stored);
+      localStorage.setItem('twu_admin_customers', JSON.stringify(MOCK_CUSTOMERS));
+      return MOCK_CUSTOMERS;
+    }
+  },
+  createCustomer: async (customerData) => {
+    try {
+      const res = await adminClient.post('/users/admin/customers', customerData);
+      return res.data;
+    } catch {
+      const stored = JSON.parse(localStorage.getItem('twu_admin_customers') || JSON.stringify(MOCK_CUSTOMERS));
+      const newCust = {
+        id: Date.now(),
+        ...customerData,
+        totalBookings: 0,
+        totalSpent: 0,
+        loyaltyTier: customerData.loyaltyTier || 'SILVER',
+        status: customerData.status || 'ACTIVE',
+        registeredAt: new Date().toISOString()
+      };
+      const updated = [newCust, ...stored];
+      localStorage.setItem('twu_admin_customers', JSON.stringify(updated));
+      return newCust;
+    }
+  },
+  updateCustomer: async (id, customerData) => {
+    try {
+      const res = await adminClient.put(`/users/admin/customers/${id}`, customerData);
+      return res.data;
+    } catch {
+      const stored = JSON.parse(localStorage.getItem('twu_admin_customers') || JSON.stringify(MOCK_CUSTOMERS));
+      const updated = stored.map(c => c.id === id ? { ...c, ...customerData } : c);
+      localStorage.setItem('twu_admin_customers', JSON.stringify(updated));
+      return { id, ...customerData };
+    }
+  },
+  deleteCustomer: async (id) => {
+    try {
+      await adminClient.delete(`/users/admin/customers/${id}`);
+      return { success: true };
+    } catch {
+      const stored = JSON.parse(localStorage.getItem('twu_admin_customers') || JSON.stringify(MOCK_CUSTOMERS));
+      const updated = stored.filter(c => c.id !== id);
+      localStorage.setItem('twu_admin_customers', JSON.stringify(updated));
+      return { success: true };
+    }
+  },
+
+  // Bookings
   getBookings: async (status = null) => {
     try {
       const url = status ? `/bookings/admin/all?status=${status}` : '/bookings/admin/all';
       const res = await adminClient.get(url);
-      return res.data?.content || MOCK_BOOKINGS;
+      const apiBookings = res.data?.content || [];
+      const localBookings = JSON.parse(localStorage.getItem('twu_demo_bookings') || '[]');
+
+      const map = new Map();
+      localBookings.forEach(b => b.bookingNumber && map.set(b.bookingNumber, b));
+      apiBookings.forEach(b => b.bookingNumber && map.set(b.bookingNumber, b));
+
+      const combined = Array.from(map.values());
+      const filtered = status ? combined.filter(b => b.status === status) : combined;
+      return filtered.length > 0 ? filtered : MOCK_BOOKINGS;
     } catch {
-      return MOCK_BOOKINGS;
+      const localBookings = JSON.parse(localStorage.getItem('twu_demo_bookings') || '[]');
+      const filtered = status ? localBookings.filter(b => b.status === status) : localBookings;
+      return filtered.length > 0 ? [...filtered, ...MOCK_BOOKINGS] : MOCK_BOOKINGS;
     }
   },
   updateBookingStatus: async (bookingNumber, status) => {
@@ -342,6 +518,8 @@ export const adminApi = {
       return { bookingNumber, status };
     }
   },
+
+  // Packages
   getPackages: async () => {
     try {
       const res = await adminClient.get('/packages');
@@ -366,6 +544,8 @@ export const adminApi = {
       return { success: true };
     }
   },
+
+  // Destinations
   getDestinations: async () => {
     try {
       const res = await adminClient.get('/destinations');
@@ -390,6 +570,8 @@ export const adminApi = {
       return { success: true };
     }
   },
+
+  // Hotels
   getHotels: async () => {
     try {
       const res = await adminClient.get('/hotels');
@@ -414,6 +596,8 @@ export const adminApi = {
       return { success: true };
     }
   },
+
+  // Reviews
   getReviewsForModeration: async (status = 'PENDING') => {
     try {
       const res = await adminClient.get(`/reviews/admin/moderation?status=${status}`);
@@ -430,6 +614,8 @@ export const adminApi = {
       return { id, status };
     }
   },
+
+  // Transactions
   getTransactions: async () => {
     try {
       const res = await adminClient.get('/payments/admin/all');

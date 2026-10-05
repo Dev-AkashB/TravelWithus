@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { DollarSign, Calendar, Package, Star, TrendingUp, Users, ArrowUpRight, ArrowRight, CheckCircle2, Clock, XCircle } from 'lucide-react';
+import { IndianRupee, Calendar, Package, Star, TrendingUp, Users, ArrowRight, CheckCircle2, Clock } from 'lucide-react';
 import { adminApi, MOCK_ADMIN_STATS, MOCK_BOOKINGS } from '../api/adminApi';
 
 export const DashboardPage = () => {
@@ -16,9 +16,9 @@ export const DashboardPage = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
       {/* Page Header */}
       <div>
-        <h1 style={{ fontSize: '2rem', marginBottom: '6px' }}>Operations Executive Dashboard</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>
-          Real-time analytics, booking throughput, and platform inventory performance.
+        <h1 style={{ fontSize: '2rem', color: '#0f172a', marginBottom: '6px' }}>Operations Executive Dashboard</h1>
+        <p style={{ color: '#64748b', fontSize: '0.95rem' }}>
+          Real-time platform analytics, live reservations throughput, and revenue tracking in Indian Rupees (₹).
         </p>
       </div>
 
@@ -27,63 +27,63 @@ export const DashboardPage = () => {
         {/* Metric 1 */}
         <div className="admin-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Gross Platform Revenue</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(20, 184, 166, 0.1)', color: '#2dd4bf', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <DollarSign size={20} />
+            <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>Gross Platform Volume</span>
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#f0fdfa', color: '#0d9488', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <IndianRupee size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
-            ${Number(stats.totalRevenue || 284500).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          <div style={{ fontSize: '1.9rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
+            ₹{Number(stats.totalRevenue || 28450000).toLocaleString('en-IN', { minimumFractionDigits: 0 })}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#34d399' }}>
-            <TrendingUp size={14} /> +18.4%% from last month
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#047857', fontWeight: 600 }}>
+            <TrendingUp size={15} /> +22.4% MoM Growth
           </div>
         </div>
 
         {/* Metric 2 */}
         <div className="admin-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Confirmed Bookings</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(16, 185, 129, 0.1)', color: '#34d399', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>Confirmed Bookings</span>
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#ecfdf5', color: '#047857', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Calendar size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
-            {stats.confirmedBookings || 184}
+          <div style={{ fontSize: '1.9rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
+            {stats.confirmedBookings || 324}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            12 pending payment authorization
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#64748b' }}>
+            {stats.pendingBookings || 18} pending verification
           </div>
         </div>
 
         {/* Metric 3 */}
         <div className="admin-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Tour Packages</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>Active Tour Packages</span>
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#fef3c7', color: '#b45309', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Package size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
-            {stats.activePackages || 10}
+          <div style={{ fontSize: '1.9rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
+            {stats.activePackages || 14}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-            Across 10 curated global destinations
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', color: '#64748b' }}>
+            Goa, Kashmir, Kerala, Rajasthan & more
           </div>
         </div>
 
         {/* Metric 4 */}
         <div className="admin-card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>Pending Review Moderation</span>
-            <div style={{ width: '36px', height: '36px', borderRadius: '8px', background: 'rgba(244, 63, 94, 0.1)', color: '#f43f5e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '0.85rem', color: '#64748b', fontWeight: 600 }}>Review Moderation</span>
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#fff1f2', color: '#be123c', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Star size={20} />
             </div>
           </div>
-          <div style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', marginBottom: '8px' }}>
-            {stats.pendingReviews || 3}
+          <div style={{ fontSize: '1.9rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>
+            {stats.pendingReviews || 4}
           </div>
-          <Link to="/reviews" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.8rem', color: '#2dd4bf', fontWeight: 600 }}>
+          <Link to="/reviews" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.82rem', color: '#0d9488', fontWeight: 700 }}>
             Moderate reviews <ArrowRight size={14} />
           </Link>
         </div>
@@ -91,10 +91,10 @@ export const DashboardPage = () => {
 
       {/* Recent Bookings Activity Table */}
       <div className="admin-card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <h2 style={{ fontSize: '1.25rem', marginBottom: '4px' }}>Recent Reservation Throughput</h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>Real-time updates from Booking & Payment microservices.</p>
+            <h2 style={{ fontSize: '1.25rem', color: '#0f172a', marginBottom: '4px' }}>Recent Reservation Throughput</h2>
+            <p style={{ color: '#64748b', fontSize: '0.85rem' }}>Real-time transactions from Spring Boot Booking & Payment microservices.</p>
           </div>
           <Link to="/bookings" className="btn-admin-secondary" style={{ padding: '8px 16px', fontSize: '0.85rem' }}>
             View All Reservations <ArrowRight size={14} />
@@ -109,7 +109,7 @@ export const DashboardPage = () => {
                 <th>Customer</th>
                 <th>Itinerary</th>
                 <th>Party Size</th>
-                <th>Total Paid</th>
+                <th>Total Paid (INR)</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -118,22 +118,22 @@ export const DashboardPage = () => {
               {recentBookings.map((b) => (
                 <tr key={b.id}>
                   <td>
-                    <span style={{ fontWeight: 700, color: '#2dd4bf' }}>{b.bookingNumber}</span>
+                    <span style={{ fontWeight: 700, color: '#0d9488' }}>{b.bookingNumber}</span>
                   </td>
                   <td>
-                    <div style={{ fontWeight: 600, color: '#ffffff' }}>{b.customerName}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{b.customerEmail}</div>
+                    <div style={{ fontWeight: 600, color: '#0f172a' }}>{b.customerName}</div>
+                    <div style={{ fontSize: '0.78rem', color: '#64748b' }}>{b.customerEmail}</div>
                   </td>
-                  <td>{b.itemTitle}</td>
+                  <td style={{ color: '#334155' }}>{b.itemTitle}</td>
                   <td>{b.numberOfGuests} Guests</td>
-                  <td style={{ fontWeight: 700, color: '#ffffff' }}>${Number(b.totalAmount).toFixed(2)}</td>
+                  <td style={{ fontWeight: 700, color: '#0f172a' }}>₹{Number(b.totalAmount).toLocaleString('en-IN')}</td>
                   <td>
                     <span className={`status-badge ${b.status === 'CONFIRMED' ? 'badge-confirmed' : b.status === 'CANCELLED' ? 'badge-cancelled' : 'badge-pending'}`}>
                       {b.status}
                     </span>
                   </td>
                   <td>
-                    <Link to="/bookings" style={{ color: '#2dd4bf', fontWeight: 600, fontSize: '0.85rem' }}>
+                    <Link to="/bookings" style={{ color: '#0d9488', fontWeight: 700, fontSize: '0.85rem' }}>
                       Inspect
                     </Link>
                   </td>

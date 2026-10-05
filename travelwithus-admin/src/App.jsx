@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AdminAuthProvider } from './context/AdminAuthContext';
 import { AdminLayout } from './components/AdminLayout';
 import { DashboardPage } from './pages/DashboardPage';
+import { CustomersManagerPage } from './pages/CustomersManagerPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { PackagesManagerPage } from './pages/PackagesManagerPage';
 import { DestinationsManagerPage } from './pages/DestinationsManagerPage';
@@ -17,6 +18,7 @@ function App() {
         <AdminLayout>
           <Routes>
             <Route path="/" element={<DashboardPage />} />
+            <Route path="/customers" element={<CustomersManagerPage />} />
             <Route path="/bookings" element={<BookingsPage />} />
             <Route path="/packages" element={<PackagesManagerPage />} />
             <Route path="/destinations" element={<DestinationsManagerPage />} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminApi, MOCK_ADMIN_HOTELS } from '../api/adminApi';
 import {
   Building2, Plus, Search, Trash2, CheckCircle2,
-  Star, Bed, MapPin, DollarSign, X
+  Star, Bed, MapPin, IndianRupee, X
 } from 'lucide-react';
 
 export const HotelsManagerPage = () => {
@@ -15,14 +15,14 @@ export const HotelsManagerPage = () => {
 
   const [formData, setFormData] = useState({
     name: '',
-    destinationName: 'Jimbaran, Bali',
+    destinationName: 'Cavelossim, Goa',
     destinationId: 1,
     starRating: 5,
-    pricePerNight: 299,
+    pricePerNight: 12500,
     roomTypesCount: 3,
-    totalRooms: 40,
-    availableRooms: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'
+    totalRooms: 60,
+    availableRooms: 24,
+    imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
   });
 
   const loadHotels = async () => {
@@ -69,14 +69,14 @@ export const HotelsManagerPage = () => {
       triggerNotification(`Hotel "${payload.name}" registered successfully!`);
       setFormData({
         name: '',
-        destinationName: 'Jimbaran, Bali',
+        destinationName: 'Cavelossim, Goa',
         destinationId: 1,
         starRating: 5,
-        pricePerNight: 299,
+        pricePerNight: 12500,
         roomTypesCount: 3,
-        totalRooms: 40,
-        availableRooms: 20,
-        imageUrl: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80'
+        totalRooms: 60,
+        availableRooms: 24,
+        imageUrl: 'https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=800&q=80'
       });
     } catch (err) {
       console.error(err);
@@ -103,14 +103,14 @@ export const HotelsManagerPage = () => {
           position: 'fixed',
           top: '20px',
           right: '20px',
-          background: 'rgba(16, 185, 129, 0.95)',
+          background: '#0d9488',
           color: '#ffffff',
           padding: '12px 20px',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
+          boxShadow: '0 10px 25px rgba(13, 148, 136, 0.3)',
           zIndex: 100,
           fontWeight: 600
         }}>
@@ -122,29 +122,17 @@ export const HotelsManagerPage = () => {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
-            Partner Hotels & Resorts
+          <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
+            Partner Hotels & Luxury Resorts
           </h1>
-          <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Monitor luxury hospitality partners, room availability, and night rates.
+          <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+            Monitor luxury hospitality partners across India, live room availability, and night rates in INR (₹).
           </p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          style={{
-            background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-            color: '#ffffff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '10px 20px',
-            fontWeight: 700,
-            fontSize: '0.9rem',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            cursor: 'pointer',
-            boxShadow: '0 4px 14px rgba(20, 184, 166, 0.4)'
-          }}
+          className="btn-admin-primary"
+          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
         >
           <Plus size={18} />
           Add Hotel Property
@@ -152,53 +140,42 @@ export const HotelsManagerPage = () => {
       </div>
 
       {/* Search Bar */}
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: '12px',
+      <div className="admin-card" style={{
         padding: '14px 18px',
         marginBottom: '24px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        gap: '12px'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, maxWidth: '400px' }}>
-          <Search size={18} color="var(--text-muted)" />
-          <input
-            type="text"
-            placeholder="Search by hotel or location..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: 'var(--text-primary)',
-              width: '100%',
-              fontSize: '0.9rem'
-            }}
-          />
-        </div>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          Showing <strong>{filtered.length}</strong> hospitality partners
-        </div>
+        <Search size={18} color="#94a3b8" />
+        <input
+          type="text"
+          placeholder="Filter hotels by name or location (Goa, Kashmir, Kerala, Rajasthan)..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="admin-input"
+          style={{ height: '38px', fontSize: '0.88rem' }}
+        />
       </div>
 
-      {/* Hotel Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(360px, 1fr))', gap: '20px' }}>
+      {/* Grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+        gap: '24px'
+      }}>
         {filtered.map((hotel) => (
           <div
             key={hotel.id}
+            className="admin-card"
             style={{
-              background: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '16px',
+              padding: 0,
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column'
             }}
           >
-            <div style={{ height: '170px', position: 'relative' }}>
+            <div style={{ position: 'relative', height: '170px' }}>
               <img
                 src={hotel.imageUrl}
                 alt={hotel.name}
@@ -208,48 +185,51 @@ export const HotelsManagerPage = () => {
                 position: 'absolute',
                 top: '12px',
                 right: '12px',
-                background: 'rgba(15, 23, 42, 0.85)',
-                padding: '4px 8px',
-                borderRadius: '8px',
+                background: '#fef3c7',
+                color: '#b45309',
+                border: '1px solid #fde68a',
+                padding: '3px 8px',
+                borderRadius: '6px',
+                fontSize: '0.72rem',
+                fontWeight: 800,
                 display: 'flex',
-                gap: '2px',
-                alignItems: 'center'
+                alignItems: 'center',
+                gap: '4px'
               }}>
-                {[...Array(hotel.starRating || 5)].map((_, i) => (
-                  <Star key={i} size={12} fill="#f59e0b" color="#f59e0b" />
-                ))}
+                <Star size={12} fill="#f59e0b" color="#f59e0b" />
+                {hotel.starRating}-Star
               </div>
             </div>
 
             <div style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '8px' }}>
-                <MapPin size={14} color="#14b8a6" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#0d9488', fontWeight: 600, fontSize: '0.8rem', marginBottom: '6px' }}>
+                <MapPin size={14} color="#0d9488" />
                 {hotel.destinationName}
               </div>
 
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, margin: '0 0 14px 0', color: 'var(--text-primary)' }}>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: '0 0 14px 0', color: '#0f172a', lineHeight: 1.35 }}>
                 {hotel.name}
               </h3>
 
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
                 padding: '12px 14px',
-                background: 'rgba(255,255,255,0.02)',
+                background: '#f8fafc',
                 borderRadius: '10px',
-                border: '1px solid var(--border-subtle)',
+                border: '1px solid #e2e8f0',
                 marginBottom: '16px'
               }}>
                 <div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Rate / Night</span>
-                  <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#2dd4bf' }}>
-                    ${hotel.pricePerNight?.toFixed(2)}
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Rate / Night</span>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>
+                    ₹{Number(hotel.pricePerNight).toLocaleString('en-IN')}
                   </span>
                 </div>
-                <div>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Room Inventory</span>
-                  <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f1f5f9' }}>
+                <div style={{ textAlign: 'right' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block' }}>Room Inventory</span>
+                  <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#047857' }}>
                     {hotel.availableRooms} / {hotel.totalRooms} Avail
                   </span>
                 </div>
@@ -260,38 +240,25 @@ export const HotelsManagerPage = () => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 paddingTop: '12px',
-                borderTop: '1px solid var(--border-subtle)',
+                borderTop: '1px solid #e2e8f0',
                 marginTop: 'auto'
               }}>
-                <span style={{
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  color: '#34d399',
-                  background: 'rgba(16, 185, 129, 0.1)',
-                  padding: '3px 8px',
-                  borderRadius: '6px'
-                }}>
+                <span className="status-badge badge-confirmed">
                   ACTIVE PARTNER
                 </span>
 
                 <button
                   onClick={() => handleDelete(hotel.id, hotel.name)}
+                  className="btn-danger"
                   style={{
-                    background: 'rgba(239, 68, 68, 0.1)',
-                    border: '1px solid rgba(239, 68, 68, 0.25)',
-                    color: '#f87171',
-                    borderRadius: '8px',
-                    padding: '6px 12px',
-                    fontSize: '0.75rem',
-                    fontWeight: 600,
                     display: 'flex',
                     alignItems: 'center',
                     gap: '6px',
                     cursor: 'pointer'
                   }}
                 >
-                  <Trash2 size={13} />
-                  Delete
+                  <Trash2 size={14} />
+                  Deactivate
                 </button>
               </div>
             </div>
@@ -299,12 +266,12 @@ export const HotelsManagerPage = () => {
         ))}
       </div>
 
-      {/* Add Hotel Modal */}
+      {/* Add Modal */}
       {showAddModal && (
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.75)',
+          background: 'rgba(15, 23, 42, 0.6)',
           backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
@@ -313,15 +280,13 @@ export const HotelsManagerPage = () => {
           padding: '20px'
         }}>
           <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '20px',
             width: '100%',
             maxWidth: '560px',
-            maxHeight: '90vh',
-            overflowY: 'auto',
             padding: '28px',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)'
+            boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -329,13 +294,13 @@ export const HotelsManagerPage = () => {
                   <Building2 size={20} />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800 }}>Register Hotel Property</h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Add new lodging partner to inventory</span>
+                  <h3 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 800, color: '#0f172a' }}>Register Hotel Property</h3>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Contract new hospitality provider</span>
                 </div>
               </div>
               <button
                 onClick={() => setShowAddModal(false)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
               >
                 <X size={20} />
               </button>
@@ -343,100 +308,65 @@ export const HotelsManagerPage = () => {
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                  Hotel Name
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                  Property Name
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. The Ritz-Carlton Grand Resort"
+                  placeholder="e.g. The Taj Mahal Palace, Mumbai"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.9rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                    Destination
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                    Location
                   </label>
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Jimbaran, Bali"
+                    placeholder="e.g. Cavelossim, Goa"
                     value={formData.destinationName}
                     onChange={(e) => setFormData({ ...formData, destinationName: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none',
-                      fontSize: '0.9rem'
-                    }}
+                    className="admin-input"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                    Star Rating (1-5)
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                    Star Rating
                   </label>
                   <select
                     value={formData.starRating}
                     onChange={(e) => setFormData({ ...formData, starRating: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: '#1e293b',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none',
-                      fontSize: '0.9rem'
-                    }}
+                    className="admin-input"
                   >
                     <option value="5">5 Stars (Luxury)</option>
                     <option value="4">4 Stars (Superior)</option>
-                    <option value="3">3 Stars (Standard)</option>
+                    <option value="3">3 Stars (Heritage Boutique)</option>
                   </select>
                 </div>
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '14px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                    Base Rate ($/Night)
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                    Rate (INR ₹/Night)
                   </label>
                   <input
                     type="number"
-                    min="50"
+                    min="500"
                     required
                     value={formData.pricePerNight}
                     onChange={(e) => setFormData({ ...formData, pricePerNight: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                     Total Rooms
                   </label>
                   <input
@@ -445,91 +375,53 @@ export const HotelsManagerPage = () => {
                     required
                     value={formData.totalRooms}
                     onChange={(e) => setFormData({ ...formData, totalRooms: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                     Available Rooms
                   </label>
                   <input
                     type="number"
-                    min="1"
+                    min="0"
                     required
                     value={formData.availableRooms}
                     onChange={(e) => setFormData({ ...formData, availableRooms: e.target.value })}
-                    style={{
-                      width: '100%',
-                      padding: '10px 14px',
-                      borderRadius: '10px',
-                      background: 'rgba(255,255,255,0.03)',
-                      border: '1px solid var(--border-subtle)',
-                      color: '#fff',
-                      outline: 'none'
-                    }}
+                    className="admin-input"
                   />
                 </div>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                  Cover Image URL
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                  Image URL
                 </label>
                 <input
                   type="url"
                   required
                   value={formData.imageUrl}
                   onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.85rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  style={{
-                    padding: '10px 18px',
-                    background: 'transparent',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-secondary)',
-                    borderRadius: '10px',
-                    cursor: 'pointer'
-                  }}
+                  className="btn-admin-secondary"
+                  style={{ flex: 1 }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  style={{
-                    padding: '10px 22px',
-                    background: 'linear-gradient(135deg, #14b8a6, #0d9488)',
-                    border: 'none',
-                    color: '#fff',
-                    borderRadius: '10px',
-                    fontWeight: 700,
-                    cursor: submitting ? 'not-allowed' : 'pointer'
-                  }}
+                  className="btn-admin-primary"
+                  style={{ flex: 1 }}
                 >
-                  {submitting ? 'Registering...' : 'Register Hotel'}
+                  {submitting ? 'Registering...' : 'Register Property'}
                 </button>
               </div>
             </form>

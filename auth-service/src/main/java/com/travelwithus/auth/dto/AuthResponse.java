@@ -16,7 +16,8 @@ public class AuthResponse {
     public AuthResponse() {
     }
 
-    public AuthResponse(String accessToken, String refreshToken, Long expiresIn, Long userId, String email, String firstName, String lastName, List<String> roles) {
+    public AuthResponse(String accessToken, String refreshToken, Long expiresIn, Long userId, String email,
+            String firstName, String lastName, List<String> roles) {
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.tokenType = "Bearer";

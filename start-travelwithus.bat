@@ -19,9 +19,17 @@ if %errorlevel% neq 0 (
     )
 )
 
+:: Environment defaults for native microservice execution
+if "%MYSQL_USER%"=="" set "MYSQL_USER=root"
+if "%MYSQL_PASSWORD%"=="" set "MYSQL_PASSWORD=root"
+if "%MYSQL_HOST%"=="" set "MYSQL_HOST=localhost"
+if "%MYSQL_PORT%"=="" set "MYSQL_PORT=3306"
+if "%CACHE_TYPE%"=="" set "CACHE_TYPE=simple"
+
+
 :: Check Docker availability
 set DOCKER_AVAILABLE=0
-docker --version >nul 2>&1
+where docker >nul 2>&1
 if %errorlevel% equ 0 (
     docker info >nul 2>&1
     if %errorlevel% equ 0 (
@@ -36,10 +44,10 @@ goto MENU_TERMINAL
 echo  [+] Docker engine is detected and running.
 echo.
 echo  Choose Startup Mode:
-echo    1. Start Frontend Portals in Terminal - Web on 3000 and Admin on 3001
+echo    1. Start Frontend Portals (Web on 3000, Admin on 3001)
 echo    2. Start Full Stack via Docker Compose
-echo    3. Start Core Microservices in Terminal Windows - Registry, Config, Gateway
-echo    4. Start ALL in Terminal Windows - Frontends and Microservices
+echo    3. Start Core Backend (Registry, Config, Gateway, Auth, User)
+echo    4. Start ALL in Terminal Windows (All Services and Frontends)
 echo    5. Exit
 echo.
 set /p MODE="Select mode [1-5] (Default is 1): "
@@ -53,21 +61,23 @@ goto LAUNCH_FRONTENDS
 
 :MENU_TERMINAL
 color 0E
-echo  [i] Notice: Docker is not installed or daemon is not running on this machine.
-echo  [+] Automatically running in Native Terminal Mode.
+echo  [i] Docker is not detected. Running in Native Terminal Mode.
+echo  [+] Direct Maven, Node.js, and MySQL execution.
 echo.
 echo  Choose Startup Mode:
-echo    1. Start Frontend Portals in Terminal - Web on 3000 and Admin on 3001
-echo    2. Start Core Infrastructure and Gateway - Registry, Config, Gateway
-echo    3. Start ALL - Core Services and Frontends in Terminal Windows
-echo    4. Exit
+echo    1. Start Frontend Portals (Web on 3000, Admin on 3001)
+echo    2. Start Core Infrastructure (Registry 8761, Config 8888, Gateway 8080)
+echo    3. Start Core Services with Frontends (Registry, Config, Gateway, Auth, User, Web, Admin)
+echo    4. Start Complete Ecosystem (All Microservices and Frontends)
+echo    5. Exit
 echo.
-set /p MODE="Select mode [1-4] (Default is 1): "
+set /p MODE="Select mode [1-5] (Press Enter for default [1]): "
 if "%MODE%"=="" set MODE=1
 if "%MODE%"=="1" goto LAUNCH_FRONTENDS
 if "%MODE%"=="2" goto LAUNCH_BACKEND_CORE
-if "%MODE%"=="3" goto LAUNCH_ALL_TERMINAL
-if "%MODE%"=="4" exit /b 0
+if "%MODE%"=="3" goto LAUNCH_CORE_AND_FRONTENDS
+if "%MODE%"=="4" goto LAUNCH_ALL_TERMINAL
+if "%MODE%"=="5" exit /b 0
 goto LAUNCH_FRONTENDS
 
 :LAUNCH_DOCKER
@@ -88,29 +98,86 @@ goto SHOW_PORTALS
 :LAUNCH_BACKEND_CORE
 echo.
 echo  [*] Launching Eureka Service Registry on 8761...
-start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && "!MVN_CMD!" spring-boot:run"
-
-timeout /t 4 /nobreak >nul
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
+timeout /t 5 /nobreak >nul
 
 echo  [*] Launching Config Server on 8888...
-start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && "!MVN_CMD!" spring-boot:run"
-
-timeout /t 4 /nobreak >nul
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+timeout /t 5 /nobreak >nul
 
 echo  [*] Launching Spring Cloud API Gateway on 8080...
-start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && "!MVN_CMD!" spring-boot:run"
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+goto SHOW_PORTALS
+
+:LAUNCH_CORE_AND_FRONTENDS
+echo.
+echo  [*] Launching Service Registry (8761)...
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
+timeout /t 4 /nobreak >nul
+
+echo  [*] Launching Config Server (8888)...
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+timeout /t 4 /nobreak >nul
+
+echo  [*] Launching API Gateway (8080)...
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+timeout /t 3 /nobreak >nul
+
+echo  [*] Launching Auth Service (8081)...
+start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d d:\TravelWithUs\auth-service && %MVN_CMD% spring-boot:run"
+timeout /t 3 /nobreak >nul
+
+echo  [*] Launching User Service (8082)...
+start "TravelWithUs - User Service (8082)" cmd /k "cd /d d:\TravelWithUs\user-service && %MVN_CMD% spring-boot:run"
+timeout /t 2 /nobreak >nul
+
+echo  [*] Launching Frontend Portals (3000, 3001)...
+start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d d:\TravelWithUs\travelwithus-web && npm run dev"
+start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d d:\TravelWithUs\travelwithus-admin && npm run dev"
 goto SHOW_PORTALS
 
 :LAUNCH_ALL_TERMINAL
 echo.
-echo  [*] Launching Core Services...
-start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && "!MVN_CMD!" spring-boot:run"
+echo  [*] Launching Eureka Service Registry (8761)...
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
 timeout /t 4 /nobreak >nul
-start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && "!MVN_CMD!" spring-boot:run"
-timeout /t 4 /nobreak >nul
-start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && "!MVN_CMD!" spring-boot:run"
 
-timeout /t 2 /nobreak >nul
+echo  [*] Launching Config Server (8888)...
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+timeout /t 4 /nobreak >nul
+
+echo  [*] Launching API Gateway (8080)...
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+timeout /t 3 /nobreak >nul
+
+echo  [*] Launching Auth Service (8081)...
+start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d d:\TravelWithUs\auth-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching User Service (8082)...
+start "TravelWithUs - User Service (8082)" cmd /k "cd /d d:\TravelWithUs\user-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Destination Service (8083)...
+start "TravelWithUs - Destination Service (8083)" cmd /k "cd /d d:\TravelWithUs\destination-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Package Service (8084)...
+start "TravelWithUs - Package Service (8084)" cmd /k "cd /d d:\TravelWithUs\package-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Hotel Service (8085)...
+start "TravelWithUs - Hotel Service (8085)" cmd /k "cd /d d:\TravelWithUs\hotel-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Booking Service (8086)...
+start "TravelWithUs - Booking Service (8086)" cmd /k "cd /d d:\TravelWithUs\booking-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Payment Service (8087)...
+start "TravelWithUs - Payment Service (8087)" cmd /k "cd /d d:\TravelWithUs\payment-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Notification Service (8088)...
+start "TravelWithUs - Notification Service (8088)" cmd /k "cd /d d:\TravelWithUs\notification-service && %MVN_CMD% spring-boot:run"
+
+echo  [*] Launching Review Service (8089)...
+start "TravelWithUs - Review Service (8089)" cmd /k "cd /d d:\TravelWithUs\review-service && %MVN_CMD% spring-boot:run"
+
+timeout /t 3 /nobreak >nul
 echo  [*] Launching Frontend Portals...
 start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d d:\TravelWithUs\travelwithus-web && npm run dev"
 start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d d:\TravelWithUs\travelwithus-admin && npm run dev"

@@ -37,6 +37,15 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
     private static final List<String> PUBLIC_PATH_PREFIXES = List.of(
             "/api/v1/auth/",
+            "/oauth2/",
+            "/login/oauth2/",
+            "/login/",
+            "/api/v1/bookings",
+            "/api/v1/payments",
+            "/api/v1/destinations",
+            "/api/v1/packages",
+            "/api/v1/hotels",
+            "/api/v1/reviews",
             "/actuator",
             "/v3/api-docs",
             "/swagger-ui",

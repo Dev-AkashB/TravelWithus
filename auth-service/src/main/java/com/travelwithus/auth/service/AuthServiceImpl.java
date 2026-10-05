@@ -38,11 +38,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager,
-                           UserRepository userRepository,
-                           PasswordEncoder passwordEncoder,
-                           JwtTokenProvider tokenProvider,
-                           RefreshTokenService refreshTokenService,
-                           PasswordResetTokenRepository passwordResetTokenRepository) {
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtTokenProvider tokenProvider,
+            RefreshTokenService refreshTokenService,
+            PasswordResetTokenRepository passwordResetTokenRepository) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -82,15 +82,14 @@ public class AuthServiceImpl implements AuthService {
                 savedUser.getEmail(),
                 savedUser.getFirstName(),
                 savedUser.getLastName(),
-                roleNames
-        );
+                roleNames);
     }
 
     @Override
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(), request.getPassword())
-        );
+                new UsernamePasswordAuthenticationToken(request.getEmail().toLowerCase().trim(),
+                        request.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -110,8 +109,7 @@ public class AuthServiceImpl implements AuthService {
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
-                roles
-        );
+                roles);
     }
 
     @Override
@@ -132,8 +130,7 @@ public class AuthServiceImpl implements AuthService {
                             user.getEmail(),
                             user.getFirstName(),
                             user.getLastName(),
-                            roles
-                    );
+                            roles);
                 })
                 .orElseThrow(() -> new BadRequestException("Refresh token is not in database!"));
     }
@@ -204,7 +201,6 @@ public class AuthServiceImpl implements AuthService {
                 user.getLastName(),
                 user.getPhone(),
                 user.isEnabled(),
-                roles
-        );
+                roles);
     }
 }

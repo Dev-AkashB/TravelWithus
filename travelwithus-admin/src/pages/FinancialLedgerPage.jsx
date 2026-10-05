@@ -1,58 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { adminApi, MOCK_TRANSACTIONS } from '../api/adminApi';
 import {
-  DollarSign, RotateCcw, Search, CheckCircle2,
-  AlertCircle, CreditCard, ArrowDownRight, ArrowUpRight, X
+  IndianRupee, Search, Filter, RotateCcw, CheckCircle2,
+  AlertTriangle, ArrowUpRight, ArrowDownRight, CreditCard,
+  Download, Calendar, ShieldCheck, X
 } from 'lucide-react';
 
 export const FinancialLedgerPage = () => {
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState(MOCK_TRANSACTIONS);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('ALL');
   const [selectedTxn, setSelectedTxn] = useState(null);
   const [refundAmount, setRefundAmount] = useState('');
-  const [refundReason, setRefundReason] = useState('Customer requested itinerary cancellation');
-  const [submitting, setSubmitting] = useState(false);
+  const [refundReason, setRefundReason] = useState('Traveler requested cancellation per policy');
   const [notification, setNotification] = useState('');
-
-  const loadTransactions = async () => {
-    setLoading(true);
-    try {
-      const data = await adminApi.getTransactions();
-      setTransactions(data);
-    } catch {
-      setTransactions(MOCK_TRANSACTIONS);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
     loadTransactions();
   }, []);
 
-  const handleRefundSubmit = async (e) => {
-    e.preventDefault();
-    if (!selectedTxn) return;
-    setSubmitting(true);
-    try {
-      const res = await adminApi.refundTransaction(
-        selectedTxn.paymentReference,
-        parseFloat(refundAmount || selectedTxn.amount),
-        refundReason
-      );
-      setTransactions(prev => prev.map(t =>
-        t.paymentReference === selectedTxn.paymentReference
-          ? { ...t, status: 'REFUNDED' }
-          : t
-      ));
-      triggerNotification(`Refund issued for ${selectedTxn.paymentReference}`);
-      setSelectedTxn(null);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSubmitting(false);
-    }
+  const loadTransactions = async () => {
+    setLoading(true);
+    const data = await adminApi.getTransactions();
+    setTransactions(data);
+    setLoading(false);
   };
 
   const triggerNotification = (msg) => {
@@ -60,37 +32,66 @@ export const FinancialLedgerPage = () => {
     setTimeout(() => setNotification(''), 4000);
   };
 
-  const filtered = transactions.filter(t =>
-    t.paymentReference?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.customerEmail?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.bookingNumber?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleRefundSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedTxn) return;
+
+    try {
+      await adminApi.refundTransaction(
+        selectedTxn.paymentReference,
+        parseFloat(refundAmount),
+        refundReason
+      );
+
+      setTransactions(prev =>
+        prev.map(t =>
+          t.paymentReference === selectedTxn.paymentReference
+            ? { ...t, status: 'REFUNDED', refundedAmount: parseFloat(refundAmount) }
+            : t
+        )
+      );
+
+      triggerNotification(`Refund issued for ${selectedTxn.paymentReference}`);
+      setSelectedTxn(null);
+    } catch {
+      triggerNotification('Failed to dispatch refund transaction.');
+    }
+  };
+
+  const filtered = transactions.filter(t => {
+    const matchesSearch = !searchQuery ||
+      t.paymentReference.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.bookingNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.customerEmail.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'ALL' || t.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const totalVolume = transactions
     .filter(t => t.status === 'SUCCESS')
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((acc, curr) => acc + curr.amount, 0);
 
   const totalRefunded = transactions
     .filter(t => t.status === 'REFUNDED')
-    .reduce((sum, t) => sum + (t.amount || 0), 0);
+    .reduce((acc, curr) => acc + (curr.refundedAmount || curr.amount), 0);
 
   return (
-    <div>
-      {/* Toast Alert */}
+    <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Toast Notification */}
       {notification && (
         <div style={{
           position: 'fixed',
-          top: '20px',
-          right: '20px',
-          background: 'rgba(16, 185, 129, 0.95)',
-          color: '#ffffff',
-          padding: '12px 20px',
+          top: '24px',
+          right: '24px',
+          zIndex: 9999,
+          background: '#0d9488',
+          color: '#fff',
+          padding: '12px 24px',
           borderRadius: '10px',
+          boxShadow: '0 10px 25px rgba(13, 148, 136, 0.3)',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          boxShadow: '0 10px 25px rgba(0,0,0,0.5)',
-          zIndex: 100,
           fontWeight: 600
         }}>
           <CheckCircle2 size={18} />
@@ -100,148 +101,149 @@ export const FinancialLedgerPage = () => {
 
       {/* Header */}
       <div style={{ marginBottom: '28px' }}>
-        <h1 style={{ fontSize: '1.75rem', fontWeight: 800, margin: 0, color: 'var(--text-primary)' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
           Financial Ledger & Payments
         </h1>
-        <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-          Real-time transaction logs, Stripe / Razorpay token settlements, and automated refund dispatcher.
+        <p style={{ margin: '4px 0 0 0', color: '#64748b', fontSize: '0.9rem' }}>
+          Real-time transaction logs, UPI / Razorpay token settlements, and automated refund dispatcher in Indian Rupees (₹).
         </p>
       </div>
 
       {/* KPI Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '14px', padding: '20px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Total Settled Volume</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#34d399' }}>
-            ${totalVolume.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="admin-card" style={{ padding: '20px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Total Settled Volume</span>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#047857' }}>
+            ₹{totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#34d399', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+          <span style={{ fontSize: '0.78rem', color: '#047857', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
             <ArrowUpRight size={14} /> Successful settlements
           </span>
         </div>
 
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '14px', padding: '20px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Processed Refunds</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#f87171' }}>
-            ${totalRefunded.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="admin-card" style={{ padding: '20px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Processed Refunds</span>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#be123c' }}>
+            ₹{totalRefunded.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-          <span style={{ fontSize: '0.75rem', color: '#f87171', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
+          <span style={{ fontSize: '0.78rem', color: '#be123c', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '6px' }}>
             <ArrowDownRight size={14} /> Cancelled bookings refunded
           </span>
         </div>
 
-        <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '14px', padding: '20px' }}>
-          <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Net Revenue</span>
-          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#2dd4bf' }}>
-            ${(totalVolume - totalRefunded).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        <div className="admin-card" style={{ padding: '20px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748b', fontWeight: 600, display: 'block', marginBottom: '6px' }}>Net Revenue</span>
+          <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0d9488' }}>
+            ₹{(totalVolume - totalRefunded).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '6px', display: 'block' }}>
-            Reconciled across all gateways
+          <span style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '6px', display: 'block' }}>
+            Reconciled across all payment channels
           </span>
         </div>
       </div>
 
       {/* Search Bar */}
-      <div style={{
-        background: 'var(--bg-surface)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: '12px',
+      <div className="admin-card" style={{
         padding: '14px 18px',
         marginBottom: '24px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, maxWidth: '420px' }}>
-          <Search size={18} color="var(--text-muted)" />
+          <Search size={18} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search by Payment Ref, Booking # or customer email..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              outline: 'none',
-              color: 'var(--text-primary)',
-              width: '100%',
-              fontSize: '0.9rem'
-            }}
+            className="admin-input"
+            style={{ height: '38px', fontSize: '0.88rem' }}
           />
         </div>
-        <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-          Showing <strong>{filtered.length}</strong> transactions
+
+        <div style={{ display: 'flex', gap: '8px' }}>
+          {['ALL', 'SUCCESS', 'REFUNDED'].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setStatusFilter(tab)}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '8px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                background: statusFilter === tab ? '#f0fdfa' : '#f1f5f9',
+                border: `1px solid ${statusFilter === tab ? '#99f6e4' : '#cbd5e1'}`,
+                color: statusFilter === tab ? '#0d9488' : '#475569',
+                cursor: 'pointer'
+              }}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Transactions Table */}
-      <div style={{ background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', borderRadius: '16px', overflow: 'hidden' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.88rem' }}>
+      {/* Ledger Table */}
+      <div className="data-table-container">
+        <table className="data-table">
           <thead>
-            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-subtle)' }}>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Payment Ref</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Booking #</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Customer</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Amount</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Payment Method</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600 }}>Status</th>
-              <th style={{ padding: '16px 20px', color: 'var(--text-muted)', fontWeight: 600, textAlign: 'right' }}>Actions</th>
+            <tr>
+              <th>Timestamp</th>
+              <th>Payment Ref</th>
+              <th>Booking Number</th>
+              <th>Customer</th>
+              <th>Amount (INR)</th>
+              <th>Channel / Last 4</th>
+              <th>Status</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filtered.map((txn) => (
-              <tr key={txn.id} style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-                <td style={{ padding: '16px 20px', fontFamily: 'monospace', color: '#2dd4bf', fontWeight: 600 }}>
-                  {txn.paymentReference}
+            {filtered.map(txn => (
+              <tr key={txn.id}>
+                <td>
+                  {new Date(txn.createdAt).toLocaleString()}
                 </td>
-                <td style={{ padding: '16px 20px', fontFamily: 'monospace', color: 'var(--text-primary)' }}>
+                <td>
+                  <span style={{ fontWeight: 700, color: '#0d9488' }}>{txn.paymentReference}</span>
+                </td>
+                <td style={{ color: '#64748b' }}>
                   {txn.bookingNumber}
                 </td>
-                <td style={{ padding: '16px 20px', color: 'var(--text-secondary)' }}>
+                <td style={{ color: '#334155' }}>
                   {txn.customerEmail}
                 </td>
-                <td style={{ padding: '16px 20px', fontWeight: 700, color: '#f1f5f9' }}>
-                  ${txn.amount?.toFixed(2)}
+                <td style={{ fontWeight: 800, color: '#0f172a' }}>
+                  ₹{txn.amount?.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </td>
-                <td style={{ padding: '16px 20px', color: 'var(--text-muted)' }}>
+                <td style={{ color: '#64748b' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <CreditCard size={14} />
-                    <span>•••• {txn.cardLastFour || '4242'}</span>
+                    <CreditCard size={14} color="#0d9488" />
+                    <span>{txn.paymentMethod === 'UPI' ? 'UPI Instant' : `•••• ${txn.cardLastFour || '4242'}`}</span>
                   </div>
                 </td>
-                <td style={{ padding: '16px 20px' }}>
-                  <span style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    padding: '3px 8px',
-                    borderRadius: '6px',
-                    background: txn.status === 'SUCCESS'
-                      ? 'rgba(16, 185, 129, 0.15)'
-                      : 'rgba(239, 68, 68, 0.15)',
-                    color: txn.status === 'SUCCESS' ? '#34d399' : '#f87171'
-                  }}>
+                <td>
+                  <span className={`status-badge ${txn.status === 'SUCCESS' ? 'badge-confirmed' : 'badge-cancelled'}`}>
                     {txn.status}
                   </span>
                 </td>
-                <td style={{ padding: '16px 20px', textAlign: 'right' }}>
+                <td style={{ textAlign: 'right' }}>
                   {txn.status === 'SUCCESS' && (
                     <button
                       onClick={() => {
                         setSelectedTxn(txn);
                         setRefundAmount(txn.amount.toString());
                       }}
+                      className="btn-danger"
                       style={{
-                        background: 'rgba(239, 68, 68, 0.1)',
-                        border: '1px solid rgba(239, 68, 68, 0.25)',
-                        color: '#f87171',
                         padding: '6px 12px',
-                        borderRadius: '8px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
-                        gap: '6px'
+                        gap: '6px',
+                        cursor: 'pointer'
                       }}
                     >
                       <RotateCcw size={12} />
@@ -260,7 +262,7 @@ export const FinancialLedgerPage = () => {
         <div style={{
           position: 'fixed',
           inset: 0,
-          background: 'rgba(0,0,0,0.75)',
+          background: 'rgba(15, 23, 42, 0.6)',
           backdropFilter: 'blur(6px)',
           display: 'flex',
           alignItems: 'center',
@@ -269,27 +271,27 @@ export const FinancialLedgerPage = () => {
           padding: '20px'
         }}>
           <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
+            background: '#ffffff',
+            border: '1px solid #e2e8f0',
             borderRadius: '20px',
             width: '100%',
             maxWidth: '480px',
             padding: '28px',
-            boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)'
+            boxShadow: '0 25px 50px rgba(15, 23, 42, 0.25)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(239, 68, 68, 0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#f87171' }}>
+                <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#be123c' }}>
                   <RotateCcw size={20} />
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800 }}>Issue Transaction Refund</h3>
-                  <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Reference: {selectedTxn.paymentReference}</span>
+                  <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#0f172a' }}>Issue Transaction Refund</h3>
+                  <span style={{ fontSize: '0.8rem', color: '#64748b' }}>Reference: {selectedTxn.paymentReference}</span>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedTxn(null)}
-                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
               >
                 <X size={20} />
               </button>
@@ -297,8 +299,8 @@ export const FinancialLedgerPage = () => {
 
             <form onSubmit={handleRefundSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
-                  Refund Amount ($)
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
+                  Refund Amount (INR ₹)
                 </label>
                 <input
                   type="number"
@@ -306,72 +308,40 @@ export const FinancialLedgerPage = () => {
                   max={selectedTxn.amount}
                   value={refundAmount}
                   onChange={(e) => setRefundAmount(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.95rem'
-                  }}
+                  className="admin-input"
                 />
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '4px', display: 'block' }}>
-                  Maximum refundable: ${selectedTxn.amount.toFixed(2)}
+                <span style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '4px', display: 'block' }}>
+                  Maximum refundable: ₹{selectedTxn.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </span>
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: 'var(--text-secondary)' }}>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}>
                   Refund Reason
                 </label>
                 <textarea
                   rows="3"
                   value={refundReason}
                   onChange={(e) => setRefundReason(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '10px 14px',
-                    borderRadius: '10px',
-                    background: 'rgba(255,255,255,0.03)',
-                    border: '1px solid var(--border-subtle)',
-                    color: '#fff',
-                    outline: 'none',
-                    fontSize: '0.85rem'
-                  }}
+                  className="admin-input"
                 />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
                 <button
                   type="button"
                   onClick={() => setSelectedTxn(null)}
-                  style={{
-                    padding: '10px 18px',
-                    background: 'transparent',
-                    border: '1px solid var(--border-subtle)',
-                    color: 'var(--text-secondary)',
-                    borderRadius: '10px',
-                    cursor: 'pointer'
-                  }}
+                  className="btn-admin-secondary"
+                  style={{ flex: 1 }}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  disabled={submitting}
-                  style={{
-                    padding: '10px 22px',
-                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
-                    border: 'none',
-                    color: '#fff',
-                    borderRadius: '10px',
-                    fontWeight: 700,
-                    cursor: submitting ? 'not-allowed' : 'pointer'
-                  }}
+                  className="btn-admin-primary"
+                  style={{ flex: 1, background: 'linear-gradient(135deg, #ef4444, #dc2626)' }}
                 >
-                  {submitting ? 'Processing...' : 'Confirm Refund'}
+                  Confirm Refund
                 </button>
               </div>
             </form>
