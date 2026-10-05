@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAdminAuth } from '../context/AdminAuthContext';
 import {
   Compass, LayoutDashboard, Calendar, Package, MapPin, Building2,
-  Star, IndianRupee, Users, LogOut, Bell, Search, ShieldCheck, CheckCircle2, Menu, X, Plane
+  Star, IndianRupee, Users, LogOut, Bell, Search, ShieldCheck, CheckCircle2, Menu, X, Plane,
+  Sliders, ExternalLink, Globe
 } from 'lucide-react';
 
 export const AdminLayout = ({ children }) => {
@@ -14,11 +15,12 @@ export const AdminLayout = ({ children }) => {
 
   const navItems = [
     { path: '/', label: 'Overview Dashboard', icon: LayoutDashboard },
-    { path: '/customers', label: 'Manage Customer Data', icon: Users, badge: '6 Records' },
-    { path: '/bookings', label: 'Reservations & Manifests', icon: Calendar },
-    { path: '/packages', label: 'Tour Packages', icon: Package },
+    { path: '/website-control', label: 'Live Website Control & CMS', icon: Sliders, badge: 'Live Sync' },
+    { path: '/packages', label: 'Tour Packages', icon: Package, badge: '14 Active' },
     { path: '/destinations', label: 'Destinations', icon: MapPin },
     { path: '/hotels', label: 'Hotels & Resorts', icon: Building2 },
+    { path: '/bookings', label: 'Reservations & Manifests', icon: Calendar },
+    { path: '/customers', label: 'Manage Customer Data', icon: Users, badge: '6 Records' },
     { path: '/reviews', label: 'Review Moderation', icon: Star, badge: '2 Pending' },
     { path: '/payments', label: 'Financial Ledger', icon: IndianRupee },
   ];
@@ -26,6 +28,11 @@ export const AdminLayout = ({ children }) => {
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -48,7 +55,7 @@ export const AdminLayout = ({ children }) => {
       >
         {/* Brand Header */}
         <div style={{ padding: '20px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)' }}>
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
             <div
               style={{
                 width: '40px',
@@ -99,6 +106,7 @@ export const AdminLayout = ({ children }) => {
                   color: active ? '#0d9488' : '#475569',
                   background: active ? '#f0fdfa' : 'transparent',
                   border: active ? '1px solid #99f6e4' : '1px solid transparent',
+                  textDecoration: 'none',
                   transition: 'var(--transition)'
                 }}
               >
@@ -123,21 +131,25 @@ export const AdminLayout = ({ children }) => {
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: '#ccfbf1', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.85rem', fontWeight: 800, color: '#0d9488' }}>
-                SA
+                {adminUser?.name ? adminUser.name.slice(0, 2).toUpperCase() : 'AD'}
               </div>
               {sidebarOpen && (
-                <div>
-                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a' }}>SuperAdmin</div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Operations Lead</div>
+                <div style={{ maxWidth: '140px', overflow: 'hidden' }}>
+                  <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
+                    {adminUser?.name || 'Administrator'}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: '#64748b' }}>
+                    {adminUser?.role === 'ROLE_SUPER_ADMIN' ? 'Super Admin' : 'Operations Admin'}
+                  </div>
                 </div>
               )}
             </div>
 
             {sidebarOpen && (
               <button
-                onClick={logout}
-                title="Logout"
-                style={{ color: '#be123c', padding: '6px', cursor: 'pointer', borderRadius: '6px', background: '#fff1f2' }}
+                onClick={handleLogout}
+                title="Logout from Admin Panel"
+                style={{ color: '#be123c', padding: '8px', cursor: 'pointer', borderRadius: '8px', background: '#fff1f2', border: '1px solid #fecdd3' }}
               >
                 <LogOut size={16} />
               </button>
@@ -162,7 +174,7 @@ export const AdminLayout = ({ children }) => {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ color: '#475569', padding: '6px', borderRadius: '6px' }}>
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} style={{ color: '#475569', padding: '6px', borderRadius: '6px', background: 'none', border: 'none', cursor: 'pointer' }}>
               <Menu size={20} />
             </button>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#047857', background: '#ecfdf5', padding: '5px 12px', borderRadius: '9999px', border: '1px solid #a7f3d0', fontWeight: 600 }}>
@@ -170,27 +182,42 @@ export const AdminLayout = ({ children }) => {
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <div style={{ position: 'relative', width: '260px' }}>
-              <Search size={16} style={{ position: 'absolute', left: '12px', top: '11px', color: '#94a3b8' }} />
-              <input
-                type="text"
-                placeholder="Global admin lookup..."
-                className="admin-input"
-                style={{ paddingLeft: '36px', height: '36px', fontSize: '0.82rem' }}
-              />
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: '#0d9488', fontWeight: 700 }}>
-              <ShieldCheck size={18} /> Role: SUPER_ADMIN
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Direct Switch to Customer Website */}
+            <a
+              href={`http://${typeof window !== 'undefined' ? window.location.hostname || 'localhost' : 'localhost'}:3000/?twu_cms=${encodeURIComponent(localStorage.getItem('twu_website_cms_config') || '{}')}`}
+              target="_blank"
+              rel="noreferrer"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: '#0d9488',
+                background: '#f0fdfa',
+                border: '1px solid #ccfbf1',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                textDecoration: 'none'
+              }}
+            >
+              <Globe size={14} /> View Live Website (3000) <ExternalLink size={12} />
+            </a>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.82rem', color: '#0d9488', fontWeight: 700, background: '#f8fafc', padding: '6px 12px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+              <ShieldCheck size={16} /> {adminUser?.role === 'ROLE_SUPER_ADMIN' ? 'ROLE: SUPER_ADMIN' : 'ROLE: ADMIN'}
             </div>
           </div>
         </header>
 
         {/* Page Viewport */}
-        <main style={{ padding: '32px', flex: 1 }}>
+        <main style={{ padding: '32px', flex: 1, overflowY: 'auto' }}>
           {children}
         </main>
       </div>
     </div>
   );
 };
+
+export default AdminLayout;

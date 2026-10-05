@@ -1,8 +1,10 @@
 import React from 'react';
 import { Compass, Plane, ShieldCheck, Headphones, Award, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCms } from '../context/CmsContext';
 
 export const Footer = () => {
+  const { config: cmsConfig } = useCms();
   return (
     <footer style={{ borderTop: '1px solid #e2e8f0', background: '#f8fafc', marginTop: '100px', paddingTop: '60px', paddingBottom: '40px' }}>
       <div className="container">
@@ -34,7 +36,7 @@ export const Footer = () => {
             </div>
             <div>
               <h4 style={{ fontSize: '1rem', color: '#0f172a', fontWeight: 700 }}>24/7 Dedicated Concierge</h4>
-              <p style={{ fontSize: '0.85rem', color: '#64748b' }}>Personal assistance every step of the journey</p>
+              <p style={{ fontSize: '0.85rem', color: '#64748b' }}>{cmsConfig?.helplinePhone || '+91 1800 200 4888'} • {cmsConfig?.supportEmail || 'support@travelwithus.com'}</p>
             </div>
           </div>
         </div>

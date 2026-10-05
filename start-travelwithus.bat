@@ -4,6 +4,9 @@ setlocal enabledelayedexpansion
 title TravelWithUs - Enterprise Launcher
 color 0B
 
+set "ROOT_DIR=%~dp0"
+if "%ROOT_DIR:~-1%"=="\" set "ROOT_DIR=%ROOT_DIR:~0,-1%"
+
 echo.
 echo ===============================================================================
 echo     TRAVELWITHUS - REAL-TIME ENTERPRISE DISTRIBUTED TRAVEL BOOKING
@@ -89,98 +92,98 @@ goto SHOW_PORTALS
 :LAUNCH_FRONTENDS
 echo.
 echo  [*] Launching Customer Traveler Portal on Port 3000...
-start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d d:\TravelWithUs\travelwithus-web && npm run dev"
+start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d %ROOT_DIR%\travelwithus-web && npm run dev"
 
 echo  [*] Launching Executive Admin Console on Port 3001...
-start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d d:\TravelWithUs\travelwithus-admin && npm run dev"
+start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d %ROOT_DIR%\travelwithus-admin && npm run dev"
 goto SHOW_PORTALS
 
 :LAUNCH_BACKEND_CORE
 echo.
 echo  [*] Launching Eureka Service Registry on 8761...
-start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d %ROOT_DIR%\service-registry && %MVN_CMD% spring-boot:run"
 timeout /t 5 /nobreak >nul
 
 echo  [*] Launching Config Server on 8888...
-start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d %ROOT_DIR%\config-server && %MVN_CMD% spring-boot:run"
 timeout /t 5 /nobreak >nul
 
 echo  [*] Launching Spring Cloud API Gateway on 8080...
-start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d %ROOT_DIR%\api-gateway && %MVN_CMD% spring-boot:run"
 goto SHOW_PORTALS
 
 :LAUNCH_CORE_AND_FRONTENDS
 echo.
 echo  [*] Launching Service Registry (8761)...
-start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d %ROOT_DIR%\service-registry && %MVN_CMD% spring-boot:run"
 timeout /t 4 /nobreak >nul
 
 echo  [*] Launching Config Server (8888)...
-start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d %ROOT_DIR%\config-server && %MVN_CMD% spring-boot:run"
 timeout /t 4 /nobreak >nul
 
 echo  [*] Launching API Gateway (8080)...
-start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d %ROOT_DIR%\api-gateway && %MVN_CMD% spring-boot:run"
 timeout /t 3 /nobreak >nul
 
 echo  [*] Launching Auth Service (8081)...
-start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d d:\TravelWithUs\auth-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d %ROOT_DIR%\auth-service && %MVN_CMD% spring-boot:run"
 timeout /t 3 /nobreak >nul
 
 echo  [*] Launching User Service (8082)...
-start "TravelWithUs - User Service (8082)" cmd /k "cd /d d:\TravelWithUs\user-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - User Service (8082)" cmd /k "cd /d %ROOT_DIR%\user-service && %MVN_CMD% spring-boot:run"
 timeout /t 2 /nobreak >nul
 
 echo  [*] Launching Frontend Portals (3000, 3001)...
-start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d d:\TravelWithUs\travelwithus-web && npm run dev"
-start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d d:\TravelWithUs\travelwithus-admin && npm run dev"
+start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d %ROOT_DIR%\travelwithus-web && npm run dev"
+start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d %ROOT_DIR%\travelwithus-admin && npm run dev"
 goto SHOW_PORTALS
 
 :LAUNCH_ALL_TERMINAL
 echo.
 echo  [*] Launching Eureka Service Registry (8761)...
-start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d d:\TravelWithUs\service-registry && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Service Registry (8761)" cmd /k "cd /d %ROOT_DIR%\service-registry && %MVN_CMD% spring-boot:run"
 timeout /t 4 /nobreak >nul
 
 echo  [*] Launching Config Server (8888)...
-start "TravelWithUs - Config Server (8888)" cmd /k "cd /d d:\TravelWithUs\config-server && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Config Server (8888)" cmd /k "cd /d %ROOT_DIR%\config-server && %MVN_CMD% spring-boot:run"
 timeout /t 4 /nobreak >nul
 
 echo  [*] Launching API Gateway (8080)...
-start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d d:\TravelWithUs\api-gateway && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - API Gateway (8080)" cmd /k "cd /d %ROOT_DIR%\api-gateway && %MVN_CMD% spring-boot:run"
 timeout /t 3 /nobreak >nul
 
 echo  [*] Launching Auth Service (8081)...
-start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d d:\TravelWithUs\auth-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Auth Service (8081)" cmd /k "cd /d %ROOT_DIR%\auth-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching User Service (8082)...
-start "TravelWithUs - User Service (8082)" cmd /k "cd /d d:\TravelWithUs\user-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - User Service (8082)" cmd /k "cd /d %ROOT_DIR%\user-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Destination Service (8083)...
-start "TravelWithUs - Destination Service (8083)" cmd /k "cd /d d:\TravelWithUs\destination-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Destination Service (8083)" cmd /k "cd /d %ROOT_DIR%\destination-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Package Service (8084)...
-start "TravelWithUs - Package Service (8084)" cmd /k "cd /d d:\TravelWithUs\package-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Package Service (8084)" cmd /k "cd /d %ROOT_DIR%\package-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Hotel Service (8085)...
-start "TravelWithUs - Hotel Service (8085)" cmd /k "cd /d d:\TravelWithUs\hotel-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Hotel Service (8085)" cmd /k "cd /d %ROOT_DIR%\hotel-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Booking Service (8086)...
-start "TravelWithUs - Booking Service (8086)" cmd /k "cd /d d:\TravelWithUs\booking-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Booking Service (8086)" cmd /k "cd /d %ROOT_DIR%\booking-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Payment Service (8087)...
-start "TravelWithUs - Payment Service (8087)" cmd /k "cd /d d:\TravelWithUs\payment-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Payment Service (8087)" cmd /k "cd /d %ROOT_DIR%\payment-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Notification Service (8088)...
-start "TravelWithUs - Notification Service (8088)" cmd /k "cd /d d:\TravelWithUs\notification-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Notification Service (8088)" cmd /k "cd /d %ROOT_DIR%\notification-service && %MVN_CMD% spring-boot:run"
 
 echo  [*] Launching Review Service (8089)...
-start "TravelWithUs - Review Service (8089)" cmd /k "cd /d d:\TravelWithUs\review-service && %MVN_CMD% spring-boot:run"
+start "TravelWithUs - Review Service (8089)" cmd /k "cd /d %ROOT_DIR%\review-service && %MVN_CMD% spring-boot:run"
 
 timeout /t 3 /nobreak >nul
 echo  [*] Launching Frontend Portals...
-start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d d:\TravelWithUs\travelwithus-web && npm run dev"
-start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d d:\TravelWithUs\travelwithus-admin && npm run dev"
+start "TravelWithUs - Customer Web (3000)" cmd /k "cd /d %ROOT_DIR%\travelwithus-web && npm run dev"
+start "TravelWithUs - Admin Console (3001)" cmd /k "cd /d %ROOT_DIR%\travelwithus-admin && npm run dev"
 goto SHOW_PORTALS
 
 :SHOW_PORTALS

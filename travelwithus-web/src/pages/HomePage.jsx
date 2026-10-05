@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Search, MapPin, Calendar, Users, ArrowRight, Sparkles, Shield, Clock, Award } from 'lucide-react';
+import { Search, MapPin, Calendar, Users, ArrowRight, Sparkles, Shield, Clock, Award, PhoneCall, CheckCircle2 } from 'lucide-react';
 import { api, FALLBACK_DESTINATIONS, FALLBACK_PACKAGES, FALLBACK_HOTELS } from '../api/client';
 import { RatingStars } from '../components/RatingStars';
+import { useCms } from '../context/CmsContext';
 
 export const HomePage = () => {
   const navigate = useNavigate();
+  const { config: cmsConfig } = useCms();
   const [destinations, setDestinations] = useState(FALLBACK_DESTINATIONS);
   const [packages, setPackages] = useState(FALLBACK_PACKAGES);
   const [hotels, setHotels] = useState(FALLBACK_HOTELS);
@@ -39,7 +41,7 @@ export const HomePage = () => {
             className="badge badge-teal"
             style={{ marginBottom: '20px', padding: '8px 18px', fontSize: '0.85rem' }}
           >
-            <Sparkles size={16} /> Premium Real-Time Travel & Luxury Holidays in India
+            <Sparkles size={16} /> {cmsConfig?.heroBadge || 'Premium Real-Time Travel & Luxury Holidays in India'}
           </div>
 
           <h1
@@ -53,7 +55,7 @@ export const HomePage = () => {
               letterSpacing: '-0.03em'
             }}
           >
-            Curated Indian Expeditions & Luxury Resort Escapes
+            {cmsConfig?.heroTitle || 'Curated Indian Expeditions & Luxury Resort Escapes'}
           </h1>
 
           <p
@@ -65,7 +67,7 @@ export const HomePage = () => {
               lineHeight: '1.6'
             }}
           >
-            Explore the tranquil backwaters of Kerala, golden beaches of Goa, snow-clad peaks of Kashmir, and royal forts of Rajasthan with verified live bookings.
+            {cmsConfig?.heroSubtitle || 'Explore the tranquil backwaters of Kerala, golden beaches of Goa, snow-clad peaks of Kashmir, and royal forts of Rajasthan with verified live bookings.'}
           </p>
 
           {/* Interactive Search Bar Panel */}

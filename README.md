@@ -134,7 +134,46 @@ Infrastructure Support:
 
 ---
 
-### Option A: Running via Docker Compose (Recommended)
+### 🐧 Running on Ubuntu / Linux
+
+TravelWithUs comes with automated shell scripts for Ubuntu (20.04 LTS, 22.04 LTS, 24.04 LTS & Debian systems):
+
+#### 1. (Optional) Install Prerequisites on Ubuntu
+If your machine is a fresh Ubuntu install or missing dependencies:
+```bash
+chmod +x *.sh
+./setup-ubuntu.sh
+```
+*(This automatically configures OpenJDK 21, Maven, Node.js 20+, Docker, and core network utilities).*
+
+#### 2. Launch the Platform
+```bash
+./start-travelwithus.sh
+```
+The interactive launcher detects your environment (Docker vs. native) and lets you choose:
+1. **Frontend Portals** (Customer Web on 3000, Admin on 3001)
+2. **Full Stack via Docker Compose** (Containers for MySQL, Redis, Kafka, and all microservices)
+3. **Core Backend** (Eureka Registry 8761, Config Server 8888, API Gateway 8080, Auth 8081, User 8082)
+4. **Complete Ecosystem** (All 11 microservices + 2 frontends with automated port readiness checks)
+5. **Build All Artifacts** (Maven compile & packaging + frontend npm installs)
+
+Logs are saved in the `logs/` directory (e.g., `tail -f logs/api-gateway.log`).
+
+#### 3. Inspect Running Services & Health Status
+```bash
+./status-travelwithus.sh
+```
+Prints a real-time status table showing port listeners, process IDs, and HTTP health check responses.
+
+#### 4. Stop All Services Cleanly
+```bash
+./stop-travelwithus.sh
+```
+Gracefully shuts down Docker containers and terminates background microservice and frontend processes on ports `3000-3001` and `8080-8089`.
+
+---
+
+### Option A: Running via Docker Compose (Cross-Platform)
 
 To run the complete ecosystem in Docker:
 

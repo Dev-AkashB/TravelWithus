@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
+import { CmsProvider } from './context/CmsContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { AuthModal } from './components/AuthModal';
@@ -20,9 +21,10 @@ import { OAuth2RedirectHandler } from './pages/OAuth2RedirectHandler';
 export function App() {
   return (
     <Router>
-      <AuthProvider>
-        <NotificationProvider>
-          <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <CmsProvider>
+        <AuthProvider>
+          <NotificationProvider>
+            <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
             <Navbar />
             <main style={{ flex: 1 }}>
               <Routes>
@@ -32,6 +34,7 @@ export function App() {
                 <Route path="/packages/:id" element={<PackageDetailPage />} />
                 <Route path="/hotels" element={<HotelsPage />} />
                 <Route path="/booking" element={<BookingPage />} />
+                <Route path="/payment" element={<BookingPage initialStep={2} />} />
                 <Route path="/my-bookings" element={<MyBookingsPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/oauth2/redirect" element={<OAuth2RedirectHandler />} />
@@ -43,6 +46,7 @@ export function App() {
           </div>
         </NotificationProvider>
       </AuthProvider>
+      </CmsProvider>
     </Router>
   );
 }

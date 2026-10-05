@@ -182,7 +182,7 @@ export const FALLBACK_PACKAGES = [
     destinationName: 'Rajasthan, India',
     durationDays: 7,
     durationNights: 6,
-    price: 38499.00,
+    price: 39600.00,
     discountPercentage: 15,
     imageUrl: 'https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80',
     rating: 4.8,

@@ -1,19 +1,21 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { adminApi } from '../api/adminApi';
 
 const AdminAuthContext = createContext(null);
 
 export const AdminAuthProvider = ({ children }) => {
   const [adminUser, setAdminUser] = useState(() => {
-    const saved = localStorage.getItem('twu_admin_user');
-    return saved ? JSON.parse(saved) : {
-      id: 1,
-      name: 'SuperAdmin Operations',
-      email: 'superadmin@travelwithus.com',
-      role: 'ROLE_SUPER_ADMIN'
-    };
+    try {
+      const saved = localStorage.getItem('twu_admin_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
   });
 
-  const [token, setToken] = useState(() => localStorage.getItem('twu_admin_token') || 'demo-admin-jwt-token');
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('twu_admin_token') || null;
+  });
 
   useEffect(() => {
     if (adminUser) {
@@ -31,16 +33,52 @@ export const AdminAuthProvider = ({ children }) => {
     }
   }, [token]);
 
-  const login = (email, password) => {
-    const userObj = {
-      id: 1,
-      name: email.includes('superadmin') ? 'SuperAdmin Operations' : 'Admin Operations',
-      email,
-      role: email.includes('superadmin') ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN'
-    };
-    setAdminUser(userObj);
-    setToken('authenticated-admin-token');
-    return userObj;
+  const login = async (email, password) => {
+    try {
+      // 1. Attempt login with backend API Gateway
+      const res = await adminApi.login(email, password);
+      
+      const userObj = res.user || {
+        id: email === 'admin@travelwithus.com' ? 1 : 2,
+        name: email === 'admin@travelwithus.com' ? 'Super Admin' : 'Operations Admin',
+        email: email,
+        role: email === 'admin@travelwithus.com' ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN'
+      };
+      
+      const jwtToken = res.token || 'twu_jwt_admin_' + Date.now();
+
+      setAdminUser(userObj);
+      setToken(jwtToken);
+      localStorage.setItem('twu_admin_user', JSON.stringify(userObj));
+      localStorage.setItem('twu_admin_token', jwtToken);
+
+      return true;
+    } catch (err) {
+      // Fallback verification for demo credentials
+      const normalizedEmail = email.toLowerCase().trim();
+      if (
+        (normalizedEmail === 'admin@travelwithus.com' ||
+         normalizedEmail === 'support@travelwithus.com' ||
+         normalizedEmail === 'superadmin@travelwithus.com') &&
+        (password === 'Admin@123' || password === 'admin123')
+      ) {
+        const userObj = {
+          id: normalizedEmail.includes('admin@') ? 1 : 2,
+          name: normalizedEmail.includes('admin@') ? 'Super Admin' : 'Operations Admin',
+          email: normalizedEmail,
+          role: normalizedEmail.includes('admin@') ? 'ROLE_SUPER_ADMIN' : 'ROLE_ADMIN'
+        };
+        const jwtToken = 'twu_jwt_admin_' + Date.now();
+
+        setAdminUser(userObj);
+        setToken(jwtToken);
+        localStorage.setItem('twu_admin_user', JSON.stringify(userObj));
+        localStorage.setItem('twu_admin_token', jwtToken);
+
+        return true;
+      }
+      return false;
+    }
   };
 
   const logout = () => {
@@ -68,3 +106,5 @@ export const useAdminAuth = () => {
   if (!context) throw new Error('useAdminAuth must be used within AdminAuthProvider');
   return context;
 };
+
+export default AdminAuthContext;

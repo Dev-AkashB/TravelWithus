@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useNotifications } from '../context/NotificationContext';
-import { Compass, Bell, User, LogOut, Sparkles, Menu, X, Plane, Calendar } from 'lucide-react';
+import { useCms } from '../context/CmsContext';
+import { Compass, Bell, User, LogOut, Sparkles, Menu, X, Plane, Calendar, ShieldCheck, PhoneCall } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout, openAuth } = useAuth();
   const { notifications, unreadCount, markAsRead, markAllAsRead, triggerDemoNotification } = useNotifications();
+  const { config: cmsConfig } = useCms();
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -27,6 +29,22 @@ export const Navbar = () => {
         boxShadow: '0 2px 12px rgba(15, 23, 42, 0.04)'
       }}
     >
+      {/* Live Admin CMS Announcement Bar */}
+      {cmsConfig?.announcementEnabled && cmsConfig?.announcementText && (
+        <div style={{ background: 'linear-gradient(90deg, #0f172a 0%, #134e4a 100%)', color: '#ffffff', padding: '8px 16px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+          <span style={{ background: '#f59e0b', color: '#000', fontWeight: 800, fontSize: '0.68rem', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.04em' }}>
+            {cmsConfig.announcementBadge || 'SPECIAL OFFER'}
+          </span>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontWeight: 500 }}>
+            {cmsConfig.announcementText}
+          </span>
+          {cmsConfig.announcementLink && (
+            <Link to={cmsConfig.announcementLink} style={{ color: '#5eead4', fontWeight: 700, marginLeft: '8px', textDecoration: 'underline', fontSize: '0.78rem' }}>
+              Explore Now &rarr;
+            </Link>
+          )}
+        </div>
+      )}
       <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '76px' }}>
         {/* Brand Logo */}
         <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -109,7 +127,30 @@ export const Navbar = () => {
         </nav>
 
         {/* Right Actions: Notifications & Account */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+          {/* Admin Suite Direct Switcher */}
+          <a
+            href="http://localhost:3001"
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              background: '#fef3c7',
+              border: '1px solid #fde68a',
+              color: '#92400e',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              textDecoration: 'none'
+            }}
+          >
+            <ShieldCheck size={14} color="#b45309" />
+            <span>Admin Suite (3001)</span>
+          </a>
+
           {/* Notification Bell */}
           <div style={{ position: 'relative' }}>
             <button
