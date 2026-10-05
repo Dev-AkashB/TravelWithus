@@ -80,24 +80,24 @@ if [ "$NEED_NODE" = true ]; then
     $SUDO apt-get install -y nodejs
 fi
 
-# ---------------------------------------------------------
-# Docker & Docker Compose
-# ---------------------------------------------------------
 echo -e "\n${CYAN}[6/6] Checking Docker & Docker Compose...${NC}"
 if command -v docker >/dev/null 2>&1; then
     echo -e "${GREEN}[✔] Docker CLI is detected:${NC}"
     docker --version
 else
-    echo -e "${YELLOW}[*] Docker not found. Would you like to install Docker Engine? (y/N)${NC}"
-    read -r -p "Install Docker? " INSTALL_DOCKER
-    if [[ "$INSTALL_DOCKER" =~ ^[Yy]$ ]]; then
-        $SUDO apt-get install -y docker.io docker-compose-v2
-        $SUDO systemctl enable --now docker
-        if [ -n "$SUDO_USER" ]; then
-            $SUDO usermod -aG docker "$SUDO_USER"
-            echo -e "${YELLOW}[!] Added $SUDO_USER to the docker group. Please log out and back in for this to take effect.${NC}"
-        fi
+    echo -e "${YELLOW}[*] Docker not found. Installing Docker Engine...${NC}"
+    $SUDO apt-get install -y docker.io
+    $SUDO systemctl enable --now docker
+    if [ -n "$SUDO_USER" ]; then
+        $SUDO usermod -aG docker "$SUDO_USER"
     fi
+fi
+
+if docker compose version >/dev/null 2>&1 || command -v docker-compose >/dev/null 2>&1; then
+    echo -e "${GREEN}[✔] Docker Compose is detected.${NC}"
+else
+    echo -e "${YELLOW}[*] Installing Docker Compose plugin...${NC}"
+    $SUDO apt-get install -y docker-compose-v2 docker-compose-plugin docker-compose || true
 fi
 
 echo -e "\n${GREEN}${BOLD}"

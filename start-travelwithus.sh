@@ -82,6 +82,7 @@ detect_prerequisites() {
 
     # Docker check
     DOCKER_AVAILABLE=0
+    DOCKER_COMPOSE_CMD=""
     if command -v docker >/dev/null 2>&1; then
         if docker info >/dev/null 2>&1; then
             DOCKER_AVAILABLE=1
@@ -91,6 +92,21 @@ detect_prerequisites() {
         fi
     else
         echo -e "  [!] Docker:             ${YELLOW}Not installed (Running in Native Mode)${NC}"
+    fi
+
+    # Docker Compose check
+    if docker compose version >/dev/null 2>&1; then
+        DOCKER_COMPOSE_CMD="docker compose"
+        local c_ver
+        c_ver=$(docker compose version 2>&1 | head -n 1)
+        echo -e "  [✔] Docker Compose:     ${GREEN}$c_ver${NC}"
+    elif command -v docker-compose >/dev/null 2>&1; then
+        DOCKER_COMPOSE_CMD="docker-compose"
+        local c_ver
+        c_ver=$(docker-compose --version 2>&1 | head -n 1)
+        echo -e "  [✔] Docker Compose:     ${GREEN}$c_ver${NC}"
+    else
+        echo -e "  [!] Docker Compose:     ${YELLOW}Not installed (Install via: apt install -y docker-compose-v2)${NC}"
     fi
 
     echo ""
@@ -193,12 +209,35 @@ launch_all_services() {
 
 # Docker Compose Launcher
 launch_docker() {
-    echo -e "\n${CYAN}${BOLD}[*] Starting TravelWithUs ecosystem via Docker Compose...${NC}"
-    if docker compose version >/dev/null 2>&1; then
-        docker compose -f "$ROOT_DIR/docker-compose.yml" up -d
-    else
-        docker-compose -f "$ROOT_DIR/docker-compose.yml" up -d
+    if [ -z "$DOCKER_COMPOSE_CMD" ]; then
+        echo -e "\n${YELLOW}[!] Docker Compose is not installed on this system.${NC}"
+        echo -e "${CYAN}[*] Attempting to install Docker Compose plugin automatically...${NC}"
+        if [ "$EUID" -ne 0 ]; then
+            sudo apt-get update -y && sudo apt-get install -y docker-compose-v2 docker-compose-plugin docker-compose || true
+        else
+            apt-get update -y && apt-get install -y docker-compose-v2 docker-compose-plugin docker-compose || true
+        fi
+
+        if docker compose version >/dev/null 2>&1; then
+            DOCKER_COMPOSE_CMD="docker compose"
+        elif command -v docker-compose >/dev/null 2>&1; then
+            DOCKER_COMPOSE_CMD="docker-compose"
+        else
+            echo -e "${RED}[✘] Could not install Docker Compose. Please run:${NC}"
+            echo -e "    ${CYAN}sudo apt update && sudo apt install -y docker-compose-v2${NC}"
+            return 1
+        fi
     fi
+
+    # Verify if microservice JARs exist before starting containers
+    if ! ls "$ROOT_DIR"/service-registry/target/*.jar >/dev/null 2>&1; then
+        echo -e "\n${YELLOW}[*] Backend JAR artifacts not detected. Building with Maven first...${NC}"
+        echo -e "${CYAN}[*] Running: mvn clean package -DskipTests --batch-mode${NC}"
+        mvn clean package -DskipTests --batch-mode
+    fi
+
+    echo -e "\n${CYAN}${BOLD}[*] Starting TravelWithUs ecosystem via $DOCKER_COMPOSE_CMD...${NC}"
+    $DOCKER_COMPOSE_CMD -f "$ROOT_DIR/docker-compose.yml" up -d --build
     echo -e "${GREEN}[✔] Docker containers started in background.${NC}"
 }
 
