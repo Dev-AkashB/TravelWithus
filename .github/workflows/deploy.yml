@@ -1,0 +1,65 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+env:
+  DEPLOY_DIR: /home/ubuntu/TravelWithUs
+
+jobs:
+  deploy:
+    name: Deploy to EC2 Instance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Execute Deployment Commands on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            echo "=========================================================="
+            echo " Starting Deployment on AWS EC2"
+            echo " Target Directory: ${{ env.DEPLOY_DIR }}"
+            echo "=========================================================="
+
+            # 1. Ensure deployment directory exists
+            if [ ! -d "${{ env.DEPLOY_DIR }}" ]; then
+              echo "Directory does not exist. Creating and cloning repository..."
+              sudo mkdir -p "${{ env.DEPLOY_DIR }}"
+              sudo chown -R $USER:$USER "${{ env.DEPLOY_DIR }}"
+              git clone https://github.com/${{ github.repository }}.git "${{ env.DEPLOY_DIR }}"
+            fi
+
+            cd "${{ env.DEPLOY_DIR }}"
+
+            # 2. Fetch and checkout the latest code from main
+            echo "Fetching latest changes..."
+            git fetch origin main
+            git reset --hard origin/main
+
+            # 3. Stop old containers and spin up new containers using Docker Compose
+            echo "Stopping old containers..."
+            docker compose down --remove-orphans || true
+
+            echo "Building and starting services..."
+            docker compose up -d --build
+
+            # 4. Clean up unused images and build cache to save disk space on EC2
+            echo "Cleaning up dangling images..."
+            docker image prune -f
+
+            echo "=========================================================="
+            echo " Deployment completed successfully!"
+            echo " Container status:"
+            echo "=========================================================="
+            docker compose ps
