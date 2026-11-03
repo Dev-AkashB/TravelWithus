@@ -12,38 +12,42 @@ env:
 jobs:
   deploy:
     name: Deploy to EC2 Instance
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Execute Deployment Commands on EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.EC2_SSH_PORT || 22 }}
+          timeout: 60s
+          command_timeout: 30m
           script_stop: true
+          envs: GITHUB_TOKEN,DEPLOY_DIR
           script: |
             echo "=========================================================="
             echo " Starting Deployment on AWS EC2"
-            echo " Target Directory: ${{ env.DEPLOY_DIR }}"
+            echo " Target Directory: $DEPLOY_DIR"
             echo "=========================================================="
 
             # 1. Ensure deployment directory exists
-            if [ ! -d "${{ env.DEPLOY_DIR }}" ]; then
+            if [ ! -d "$DEPLOY_DIR" ]; then
               echo "Directory does not exist. Creating and cloning repository..."
-              sudo mkdir -p "${{ env.DEPLOY_DIR }}"
-              sudo chown -R $USER:$USER "${{ env.DEPLOY_DIR }}"
-              git clone https://github.com/${{ github.repository }}.git "${{ env.DEPLOY_DIR }}"
+              sudo mkdir -p "$DEPLOY_DIR"
+              sudo chown -R $USER:$USER "$DEPLOY_DIR"
+              git clone https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git "$DEPLOY_DIR"
             fi
 
-            cd "${{ env.DEPLOY_DIR }}"
+            cd "$DEPLOY_DIR"
 
-            # 2. Fetch and checkout the latest code from main
+            # 2. Configure auth and fetch the latest code from main
             echo "Fetching latest changes..."
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
             git fetch origin main
             git reset --hard origin/main
 
